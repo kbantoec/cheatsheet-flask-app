@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css?family=Liu+Jian+Mao+Cao&display=swap');
+
+html {
+  background-color: #171c26;
+  color: lightgray;
+  font-family: 'Lato', sans-serif;
+}
+
+nav {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.main-title {
+  display: inline;
+  font-size: 5em;
+  padding-bottom: 20px;
+  border-bottom: 3px solid white;
+}
+
+nav p {
+  font-size: 1.5em;
+  margin: auto;
+  margin-top: 50px;
+  font-family: 'Liu Jian Mao Cao', sans-serif;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 200px);
+  grid-auto-rows: 1fr;
+  grid-gap: 15px;
+  font-size: 2em;
+  margin: 1em 6em 1em 6em;
+  padding: 10px;
+}
+
+.container a {
+  display: grid;
+  margin: auto;
+  text-decoration: none;
+  height: 200px;
+  border: solid 0px lightgray;
+  border-radius: 3px;  
+
+  background: #00B4DB;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0083B0, #00B4DB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  transition-property: transform;
+  transition-duration: 500ms;
+  transition-timing-function: ease-out;
+
+  width: 200px;
+}
+
+.container a:hover {
+  transform: scale(1.05);
+}
+
+.container a div:nth-child(n) {
+  margin: auto;
+  color: lightgray;
+  font-weight: bold;
+  font-family: 'Lato', sans-serif;
+}
