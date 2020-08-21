@@ -2,9 +2,31 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link rel="icon" href="{{ url_for('static', filename='img/beachball.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/beachball.ico', _external=True) }}">
+
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+
+    <!-- HIGHLIGT JS -->
+    <!-- Theme: Monokai Sublime -->
+    <!-- Source: https://highlightjs.org/usage/  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/monokai-sublime.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+    <!-- JQUERY -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+
+    <!-- FONT-AWSOME 4 -->
+    <!-- Documentation: https://www.w3schools.com/icons/fontawesome_icons_intro.asp -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- MATH NOTATION -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     {% block head %} {% endblock %}
+
   </head>
   <body>
     {% block body %} {% endblock %}
