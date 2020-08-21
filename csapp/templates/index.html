@@ -1,9 +1,80 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>Home</title>
+<title>Index</title>
+
+<!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css', _external=True) }}">
+
+<!-- JS SCRIPTS -->
+
 {% endblock %}
 
 {% block body %}
-<h1>Home Page</h1>
+
+<div id="main-container">
+    <header>
+        <nav>
+            <h1 class="main-title">Python Reminder</h1> <p>Kai BANTO ECKERT</p>
+        </nav>
+    </header>
+
+    <section>
+
+        <div class="container">
+
+            <a href="pandas.html">
+                <div>
+                    <p>Pandas</p>
+                </div>
+            </a>
+
+            <a href="numpy.html">
+                <div>
+                    <p>Numpy</p>
+                </div>
+            </a>
+
+            <a href="statsmodels.html">
+                <div>
+                    <p>Statsmodels</p>
+                </div>
+            </a>
+
+            <a href="sklearn.html">
+                <div>
+                    <p>Scikit-Learn</p>
+                </div>
+            </a>
+
+            <a href="finance.html">
+                <div>
+                    <p>Finance</p>
+                </div>
+            </a>
+
+            <a href="matplotlib.html">
+                <div>
+                    <p>Matplotlib</p>
+                </div>
+            </a>
+
+            <a href="xgboost.html">
+                <div>
+                    <p>XGBoost</p>
+                </div>
+            </a>
+
+            <a href="arch.html">
+                <div>
+                    <p>ARCH</p>
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+    <footer></footer>
+</div>
 {% endblock %}
