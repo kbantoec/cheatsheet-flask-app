@@ -1,11 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Liu+Jian+Mao+Cao&display=swap');
 
-html {
-  background-color: #171c26;
-  color: lightgray;
-  font-family: 'Lato', sans-serif;
-}
-
 nav {
   text-align: center;
   margin-top: 50px;
@@ -44,14 +38,22 @@ nav p {
   border-radius: 3px;  
 
   background: #00B4DB;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #0083B0, #00B4DB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  
   transition-property: transform;
   transition-duration: 500ms;
   transition-timing-function: ease-out;
 
   width: 200px;
+}
+
+.container a:nth-child(2n+1) {
+  background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0083B0, #00B4DB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.container a:nth-child(2n) {
+  background: -webkit-linear-gradient(to left, #0083B0, #00B4DB);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #0083B0, #00B4DB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .container a:hover {
@@ -63,4 +65,67 @@ nav p {
   color: lightgray;
   font-weight: bold;
   font-family: 'Lato', sans-serif;
+}
+
+.container form {
+  margin: auto;
+  display: grid;
+}
+
+.container form input {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;;
+}
+
+.add-item {
+  display: grid;
+}
+
+.add-item-btn {
+  margin: auto;
+  font-size: 1em;
+  height: 50px;
+  width: 50px;
+  background: lightgray;
+  border-radius: 30px;
+  border: solid 0px white;
+  cursor: pointer;
+  transition-property: transform, background, color;
+  transition-timing-function: ease-in-out;
+  transition-duration: 500ms;
+  -moz-transition-property: transform, background, color;
+  -moz-transition-duration: 500ms;
+  -moz-transition-timing-function: ease-in-out;
+  -webkit-transition-property: transform, background, color;
+  -webkit-transition-duration: 500ms;
+  -webkit-transition-timing-function: ease-in-out;  
+  -o-transition-property: transform, background, color;
+  -o-transition-duration: 500ms;
+  -o-transition-timing-function: ease-in-out;
+}
+
+.add-item-btn:hover {
+  transform: scale(1.1);
+  background: white;
+  color: #00B4DB;
+}
+
+.submit-btn {
+  background-color: transparent;
+  color: lightgray;  
+  border-width: 0px;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+}
+
+.submit-btn:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+input {
+  font-family: 'Lato', sans-serif;
+  font-weight: bold;
+  text-align: center;
 }
