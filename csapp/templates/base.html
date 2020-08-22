@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <!-- <link rel="icon" href="{{ url_for('static', filename='img/k.png', _external=True) }}"> -->
     <link rel="icon" href="{{ url_for('static', filename='img/beachball.ico', _external=True) }}">
 
     <!-- FONTS -->
@@ -24,6 +25,9 @@
     <!-- MATH NOTATION -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css', _external=True) }}">
 
     {% block head %} {% endblock %}
 

@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 
+
 {% block head %}
-<title>Index</title>
+    <title>Index</title>
 
-<!-- CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css', _external=True) }}">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css', _external=True) }}">
 
-<!-- JS SCRIPTS -->
-
+    <!-- SCRIPTS -->
+    
 {% endblock %}
+
 
 {% block body %}
 
@@ -21,60 +23,27 @@
 
     <section>
 
-        <div class="container">
+        <div class="container" id="container">
 
-            <a href="pandas.html">
+            {% for item in items %}
+            
+            <a href="./{{ item.lower_label }}">
                 <div>
-                    <p>Pandas</p>
+                    <p>{{ item.label }}</p>
                 </div>
             </a>
 
-            <a href="numpy.html">
-                <div>
-                    <p>Numpy</p>
-                </div>
-            </a>
+            {% endfor %}
 
-            <a href="statsmodels.html">
-                <div>
-                    <p>Statsmodels</p>
-                </div>
-            </a>
-
-            <a href="sklearn.html">
-                <div>
-                    <p>Scikit-Learn</p>
-                </div>
-            </a>
-
-            <a href="finance.html">
-                <div>
-                    <p>Finance</p>
-                </div>
-            </a>
-
-            <a href="matplotlib.html">
-                <div>
-                    <p>Matplotlib</p>
-                </div>
-            </a>
-
-            <a href="xgboost.html">
-                <div>
-                    <p>XGBoost</p>
-                </div>
-            </a>
-
-            <a href="arch.html">
-                <div>
-                    <p>ARCH</p>
-                </div>
-            </a>
+            <div class="add-item">
+                <button class="add-item-btn" onclick="addItem()">+</button>
+            </div>
 
         </div>
 
     </section>
 
     <footer></footer>
+    <script src="{{ url_for('static', filename='js/index.js', _external=True) }}"></script>
 </div>
 {% endblock %}

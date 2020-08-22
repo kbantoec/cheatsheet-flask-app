@@ -1,0 +1,35 @@
+    {% extends 'base.html' %}
+
+    {% block head %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/cheatsheet.css', _external=True) }}">
+        <title>Numpy Reminder</title>
+    {% endblock %}
+
+    {% block body %}
+        <div class="main-container">
+
+            <header>
+                <div class="header-container">
+                    <nav>
+                        <div>
+                            <ul class="nav-list">
+                            <li><a id="home" href="{{ url_for('index', _external=True) }}" >Back to Index</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <div class="main-title">
+                        <h1>Numpy</h1>
+                    </div>
+                </div>
+            </header>
+
+            <section>
+                <aside></aside>
+                <article></article>
+                <aside></aside>
+            </section>
+
+            <footer></footer>
+
+        </div>
+    {% endblock %}
