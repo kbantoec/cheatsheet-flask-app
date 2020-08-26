@@ -8,4 +8,10 @@ from . import utils
 @app.cli.command()
 def create_indexitem_table():
     """Create IndexItem Table."""
-    utils.create_indexitem_table()
+    utils.create_indexitem_table(app)
+
+
+@app.cli.command()
+def create_reminder_table():
+    """Create Reminder Table."""
+    utils.create_reminder_table(app)
