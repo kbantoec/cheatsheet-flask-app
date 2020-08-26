@@ -13,10 +13,6 @@ app.config.from_object('config')
 def index():
     con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
     con.row_factory = utils.dict_factory
-    # res: sqlite3.Cursor = con.execute("SELECT * FROM `indexitem`;")
-    # items: list = [models.IndexItem(**row) for row in res]
-    # con.close()
-    # return render_template('index.html', items=items)
 
     if request.method == 'POST':
         # Retrieve the submitted label value
@@ -53,16 +49,43 @@ def index():
         return render_template('index.html', items=items)
 
 
-# con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-# con.row_factory = utils.dict_factory
-# res: sqlite3.Cursor = con.execute("SELECT * FROM `indexitem`;")
-# items: list = [models.IndexItem(**row) for row in res]
-# lower_labels: list = [item.lower_label for item in items]
+@app.route('/reminder/<string:label>', methods=['GET', 'POST'])
+def reminder(label: str):
+    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
+    con.row_factory = utils.dict_factory
 
-# @app.route('/reminder/<str:label>', methods=['GET', 'POST'])
-# def reminder(label):
-#     return render_template(f"{label}.html")
+    capitalized_label: str = label.capitalize()
+    lower_label: str =label.lower()
+    path: str = f"/reminder/{label.lower()}"
 
-# @app.route('/pandas/', methods=['GET', 'POST'])
-# def pandas():
-#     return render_template('pandas.html')
+    if (request.method == 'POST'):
+        # Retrieve submitted values and store them in a `Reminder` instance
+        # new_item = models.Reminder(**request.form)
+        new_item = models.Reminder(label=request.form['label'], 
+                                   h1=request.form['h1'], 
+                                   content_cell_1=request.form['content_cell_1'], 
+                                   content_cell_2=request.form['content_cell_2'])
+
+        # Push the item to the database
+        try:
+            con.execute("""INSERT INTO `reminder` (id, label, h1, content_cell_1, content_cell_2) 
+                           VALUES (NULL, ?, ?, ?, ?);""", (new_item.label, new_item.h1, new_item.content_cell_1, new_item.content_cell_2))
+            # Save (commit) the changes
+            con.commit()
+            con.close()
+            # Redirect to the reminder
+            return redirect(path)
+        except Exception as e:
+            print(f"There was a problem adding your item. Error: {e}.", file=sys.stderr)
+            con.close()
+    else:
+        res: sqlite3.Cursor = con.execute("SELECT * FROM `reminder` WHERE label = ?;", (label, ))        
+        items: list = sorted([models.Reminder(**row) for row in res], key=lambda el: el.h1)
+        unique_titles: list = list(set([item.h1 for item in items]))
+        con.close()
+        return render_template('reminder.html', 
+                               capitalized_label=capitalized_label, 
+                               lower_label=lower_label, 
+                               path_action=path,
+                               items=items, 
+                               unique_titles=unique_titles)
