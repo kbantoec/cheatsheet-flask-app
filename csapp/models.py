@@ -26,6 +26,18 @@ class IndexItem:
         return f"<IndexItem {self.id!r}>"
 
 
+class Reminder:
+    def __init__(self, label: str = None, h1: str = None, content_cell_1: str = None, content_cell_2: str = None, id: int = None):
+        self.label: str = label.lower()
+        self.h1: str = h1
+        self.content_cell_1: str = content_cell_1
+        self.content_cell_2: str = content_cell_2
+        self.id = id
+
+    def __str__(self):
+        return f"{self.__dict__}"
+
+
 if __name__ == "__main__":
     item1 = IndexItem('pandas')
     print(item1)
