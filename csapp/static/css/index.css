@@ -82,9 +82,28 @@ nav p {
   display: grid;
 }
 
+.submit-btn {
+  background-color: transparent;
+  color: lightgray;  
+  border-width: 0px;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+}
+
+.submit-btn:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+input {
+  font-family: 'Lato', sans-serif;
+  font-weight: bold;
+  text-align: center;
+}
+
 .add-item-btn {
   margin: auto;
-  font-size: 1em;
+  font-size: 25px;
   height: 50px;
   width: 50px;
   background: lightgray;
@@ -109,23 +128,4 @@ nav p {
   transform: scale(1.1);
   background: white;
   color: #00B4DB;
-}
-
-.submit-btn {
-  background-color: transparent;
-  color: lightgray;  
-  border-width: 0px;
-  cursor: pointer;
-  font-family: 'Lato', sans-serif;
-}
-
-.submit-btn:hover {
-  color: white;
-  text-decoration: underline;
-}
-
-input {
-  font-family: 'Lato', sans-serif;
-  font-weight: bold;
-  text-align: center;
 }
