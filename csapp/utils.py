@@ -7,51 +7,233 @@ def dict_factory(cursor, row):
     return dict([(col[0], row[idx]) for idx, col in enumerate(cursor.description)])
 
 
-def create_indexitem_table(app):
-    # Start connection with the database (also creates the file if it does not yet exist)
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    con = None
+    try:
+        # Start connection with the database (also creates the file if it does not yet exist)
+        con = sqlite3.connect(db_file)
+        return con
+    except sqlite3.Error as e:
+        print(e)
 
-    # Using the nonstandard `execute()` method of the `Connection` object, we don't have to create the `Cursor` objects explicitly
-    con.execute("""CREATE TABLE IF NOT EXISTS `indexitem` (
-        id INTEGER PRIMARY KEY ASC, 
-        label TEXT NOT NULL UNIQUE,
-        command_id INTEGER NOT NULL,
-        FOREIGN KEY (command_id)
-            REFERENCES `commands` (command_id)
-        );""")
-    
-    con.commit()
-    con.close()
+    return con
 
 
-def enable_fk(app):
-    """Enable foreign key constraint."""
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-    fk_enabled: bool = bool(con.execute("""PRAGMA foreign_keys;""").fetchone()[0])
+def create_table(app, sql_table):
+    """ create a table from the sql_table statement
+    :param conn: Connection object
+    :param sql_table: a CREATE TABLE statement
+    :return:
+    """
+    con: sqlite3.Connection = create_connection(app.config['DATABASE_URI'])
 
-    if fk_enabled:
-        print("Foreign key constraint already enabled.")
+    if con is not None:
+        try:            
+            c = con.cursor()
+            c.execute(sql_table)
+            con.commit()
+            con.close()
+        except sqlite3.Error as e:
+            print(e)
     else:
-        con.execute("PRAGMA foreign_keys = ON;")
+        print("Error! Cannot create the database connection.")
+
+
+def drop_table(app, table_name: str):
+    s: str = str(input(f"This command is used to drop the {table_name!r} table in the database. " +
+                       "Be careful before dropping a table. " +
+                       "Deleting a table will result in loss of complete information stored in the table!" +
+                       "\nAre you sure you want to go ahead? [y/n] "))
+        
+    if s.lower() == 'y':
+        con: sqlite3.Connection = create_connection(app.config['DATABASE_URI'])
+        sql_instruction: str = f"DROP TABLE IF EXISTS `{table_name}`;"
+        con.execute(sql_instruction)
         con.commit()
-        print("Foreign key constraint enabled.")
+        con.close()
+        print(f"You have succesfully removed the {table_name!r} table.")
+    else:
+        print(f"You have not removed the {table_name!r} table.")
+
+
+def create_index_items_table(app):
+
+    table: str = """CREATE TABLE IF NOT EXISTS `index_items` (
+                        item_id INTEGER PRIMARY KEY ASC, 
+                        item_label TEXT NOT NULL UNIQUE                        
+                    );"""
     
+    create_table(app, table)
+
+
+def create_commands_table(app):
+
+    table: str = """CREATE TABLE IF NOT EXISTS `commands` (
+                        command_id INTEGER PRIMARY KEY ASC,
+                        command TEXT,
+                        description TEXT,
+                        syntax TEXT,
+                        lang TEXT,
+                        item_id INTEGER NOT NULL,
+                        FOREIGN KEY (item_id)
+                            REFERENCES `index_items` (item_id)
+                                ON UPDATE CASCADE
+                                ON DELETE CASCADE
+                    );"""
+    
+    create_table(app, table)
+
+
+def create_examples_table(app):
+
+    table: str = """CREATE TABLE IF NOT EXISTS `examples` (
+                        example_id INTEGER PRIMARY KEY ASC,
+                        caption TEXT,
+                        content TEXT,
+                        command_id INTEGER NOT NULL,
+                        FOREIGN KEY (command_id)
+                            REFERENCES commands (command_id)
+                                ON UPDATE CASCADE
+                                ON DELETE CASCADE
+                    );"""
+    
+    create_table(app, table)
+
+
+def create_links_table(app):
+
+    table: str = """CREATE TABLE IF NOT EXISTS `links` (
+                        link_id INTEGER PRIMARY KEY ASC,
+                        link_label TEXT,
+                        href TEXT,
+                        type VARCHAR(5),
+                        command_id INTEGER NOT NULL,
+                        FOREIGN KEY (command_id)
+                            REFERENCES commands (command_id)
+                                ON UPDATE CASCADE
+                                ON DELETE CASCADE
+                    );"""
+    
+    create_table(app, table)
+
+
+# def create_commands_examples_table(app):
+#     # https://stackoverflow.com/questions/7296846/how-to-implement-one-to-one-one-to-many-and-many-to-many-relationships-while-de
+
+#     table: str = """CREATE TABLE IF NOT EXISTS `commands_examples` (
+#                         example_id INTEGER NOT NULL,
+#                         command_id INTEGER NOT NULL,
+#                         PRIMARY KEY (example_id, command_id),
+#                         FOREIGN KEY (example_id)
+#                             REFERENCES examples (example_id)
+#                                 ON DELETE CASCADE 
+#                                 ON UPDATE NO ACTION,
+#                         FOREIGN KEY (command_id)
+#                             REFERENCES commands (command_id)
+#                                 ON DELETE CASCADE 
+#                                 ON UPDATE NO ACTION
+#                     );"""
+    
+#     create_table(app, table)
+
+
+def drop_index_items_table(app):
+    drop_table(app, 'index_items')   
+
+
+def drop_commands_table(app):
+    drop_table(app, 'commands')
+
+
+def drop_examples_table(app):
+    drop_table(app, 'examples')
+
+
+def drop_links_table(app):
+    drop_table(app, 'links')
+
+
+def test_db(app):
+    con = create_connection(app.config['DATABASE_URI'])
+    
+    try:
+        fk_state: int = con.execute("""PRAGMA foreign_keys;""").fetchone()[0]
+        print(f"Foreign key constraint state (1 = enabled, 0 = disabled): {fk_state}.")
+
+        if fk_state == 1:
+            print("Foreign key constraint already enabled.")
+        else:
+            con.execute("PRAGMA foreign_keys = ON;")
+            con.commit()
+            fk_state_expost: int = con.execute("""PRAGMA foreign_keys;""").fetchone()[0]
+            print(f"Foreign key constraint enabled: {fk_state_expost}.")
+
+        con.execute("INSERT INTO index_items (item_label) VALUES ('statsmodels'), ('scikit-learn'), ('pandas');")
+        con.commit()
+        print(con.execute("SELECT * FROM index_items;").fetchall())
+
+        item_id: int = con.execute("SELECT item_id FROM index_items WHERE item_label = 'pandas';").fetchone()[0]
+        con.execute("""INSERT INTO commands (command, description, syntax, lang, item_id) 
+                       VALUES ('test', 'test desc', 'test syn', 'py', ?), 
+                              ('ma commande', 'ma description', 'ma syntaxe', 'py', ?),
+                              ('pandas.DataFrame', 'Create a DataFrame', 'pandas.DataFrame()', 'py', 2);""", 
+                    (item_id, item_id))
+        con.commit()
+        print(con.execute("SELECT * FROM commands;").fetchall())
+                
+        con.execute("""INSERT INTO examples (caption, content, command_id)
+                       VALUES ('Print hello world', 'print(''hello world'')', 3);""")
+        con.commit()
+        print(con.execute("SELECT * FROM examples;").fetchall())
+
+        # con.execute("""INSERT INTO commands_examples (example_id, command_id) VALUES (1, 3)""")        
+        # print(con.execute("SELECT * FROM commands_examples;").fetchall())
+
+        # Modify informations to see if foreing key constraints update correctly
+        con.execute("""UPDATE index_items
+                       SET item_id = 100
+                       WHERE item_label = 'pandas';""")
+        con.commit()
+        print(con.execute("SELECT * FROM index_items;").fetchall())
+        print(con.execute("SELECT * FROM commands;").fetchall())
+
+        con.execute("""UPDATE commands
+                       SET command_id = 99
+                       WHERE command = 'pandas.DataFrame';""")
+        con.commit()
+        print(con.execute("SELECT * FROM commands;").fetchall())
+        print(con.execute("SELECT * FROM examples;").fetchall())
+
+        # con.execute("""UPDATE examples
+        #                SET example_id = 99
+        #                WHERE caption = 'Print hello world';""")  # FOREIGN KEY constraint failed
+        # con.commit()
+        
+        # con.execute("""DELETE FROM examples WHERE example_id = 1;""")
+        # con.commit()
+        # print(con.execute("SELECT * FROM examples;").fetchall())
+        # print(con.execute("SELECT * FROM commands_examples;").fetchall())
+    except sqlite3.Error as e:
+        print(e)
     con.close()
 
 
-def disable_fk(app):
-    """Disable foreign key constraint."""
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-    fk_enabled: bool = bool(con.execute("""PRAGMA foreign_keys;""").fetchone()[0])
 
-    if fk_enabled:        
-        con.execute("PRAGMA foreign_keys = OFF;")
-        con.commit()
-        print("Foreign key constraint disabled.")
-    else:        
-        print("Foreign key constraint already disabled.")
-    
-    con.close()
+
+
+
+
+
+
+
+
+
+
 
 
 def create_reminder_table(app):
@@ -72,79 +254,59 @@ def create_reminder_table(app):
     con.close()
 
 
-def create_commands_table(app):
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-    con.execute("""CREATE TABLE IF NOT EXISTS `commands` (command_id INTEGER PRIMARY KEY ASC,
-                                                          command TEXT,
-                                                          description TEXT,
-                                                          syntay TEXT);""")
-    con.commit()
-    con.close()
+# def create_examples_table(app):
+#     con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
+#     con.execute("""CREATE TABLE IF NOT EXISTS `examples` (example_id INTEGER PRIMARY KEY ASC,
+#                                                           caption TEXT,
+#                                                           content TEXT);""")
+#     con.commit()
+#     con.close()
 
 
-def create_examples_table(app):
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-    con.execute("""CREATE TABLE IF NOT EXISTS `examples` (example_id INTEGER PRIMARY KEY ASC,
-                                                          caption TEXT,
-                                                          content TEXT);""")
-    con.commit()
-    con.close()
-
-
-def create_links_table(app):
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-    con.execute("""CREATE TABLE IF NOT EXISTS `links` (link_id INTEGER PRIMARY KEY ASC,
-                                                       text TEXT,
-                                                       href TEXT,
-                                                       type VARCHAR(5));""")
-    con.commit()
-    con.close()
-
-
-def create_commands_examples_table(app):
-    """Composition table between Commands and Examples tables.
+# def create_commands_examples_table(app):
+#     """Composition table between Commands and Examples tables.
     
-    Official information:
-    - https://www.sqlitetutorial.net/sqlite-create-table/
-    - To learn about SQLite foreign key constraint actions: https://www.sqlitetutorial.net/sqlite-foreign-key/
-    """
+#     Official information:
+#     - https://www.sqlitetutorial.net/sqlite-create-table/
+#     - To learn about SQLite foreign key constraint actions: https://www.sqlitetutorial.net/sqlite-foreign-key/
+#     """
     
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-    con.execute("""CREATE TABLE IF NOT EXISTS `commands_examples` (
-        command_id INTEGER,
-        example_id INTEGER,
-        PRIMARY KEY (command_id, example_id),
-        FOREIGN KEY (command_id)
-            REFERENCES `commands` (command_id)
-                ON DELETE CASCADE
-                ON UPDATE NO ACTION,
-        FOREIGN KEY (example_id)
-            REFERENCES `examples` (example_id)
-                ON DELETE CASCADE
-                ON UPDATE NO ACTION
-    );""")
-    con.commit()
-    con.close()
+#     con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
+#     con.execute("""CREATE TABLE IF NOT EXISTS `commands_examples` (
+#         command_id INTEGER,
+#         example_id INTEGER,
+#         PRIMARY KEY (command_id, example_id),
+#         FOREIGN KEY (command_id)
+#             REFERENCES `commands` (command_id)
+#                 ON DELETE CASCADE
+#                 ON UPDATE NO ACTION,
+#         FOREIGN KEY (example_id)
+#             REFERENCES `examples` (example_id)
+#                 ON DELETE CASCADE
+#                 ON UPDATE NO ACTION
+#     );""")
+#     con.commit()
+#     con.close()
 
 
-def create_commands_links_table(app):
-    """Composition table between Command and Link tables."""
-    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
-    con.execute("""CREATE TABLE IF NOT EXISTS `commands_links` (
-        command_id INTEGER,
-        link_id INTEGER,
-        PRIMARY KEY (command_id, link_id),
-        FOREIGN KEY (command_id)
-            REFERENCES `commands` (command_id)
-                ON DELETE CASCADE
-                ON UPDATE NO ACTION,
-        FOREIGN KEY (link_id)
-            REFERENCES `links` (link_id)
-                ON DELETE CASCADE
-                ON UPDATE NO ACTION
-    );""")
-    con.commit()
-    con.close()
+# def create_commands_links_table(app):
+#     """Composition table between Command and Link tables."""
+#     con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
+#     con.execute("""CREATE TABLE IF NOT EXISTS `commands_links` (
+#         command_id INTEGER,
+#         link_id INTEGER,
+#         PRIMARY KEY (command_id, link_id),
+#         FOREIGN KEY (command_id)
+#             REFERENCES `commands` (command_id)
+#                 ON DELETE CASCADE
+#                 ON UPDATE NO ACTION,
+#         FOREIGN KEY (link_id)
+#             REFERENCES `links` (link_id)
+#                 ON DELETE CASCADE
+#                 ON UPDATE NO ACTION
+#     );""")
+#     con.commit()
+#     con.close()
 
 
 def drop_reminder_table(app):    
@@ -169,6 +331,41 @@ def drop_reminder_table_data(app):
         print("You have succesfully removed the data inside the 'reminder' table.")
     else:
         print("You have not removed the data inside the 'reminder' table.")
+
+
+def enable_fk(app):
+    """Enable foreign key constraint."""
+    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
+    fk_state: int = con.execute("""PRAGMA foreign_keys;""").fetchone()[0]
+    print(f"Foreign key constraint state: {fk_state}.")
+
+    if fk_state == 1:
+        print("Foreign key constraint already enabled.")
+    else:
+        con.execute("PRAGMA foreign_keys = ON;")
+        con.commit()
+        fk_state_expost: int = con.execute("""PRAGMA foreign_keys;""").fetchone()[0]
+        print(f"Foreign key constraint enabled: {fk_state_expost}.")
+    
+    con.close()
+
+
+def disable_fk(app):
+    """Disable foreign key constraint."""
+    con: sqlite3.Connection = sqlite3.connect(app.config['DATABASE_URI'])
+    fk_state: int = con.execute("""PRAGMA foreign_keys;""").fetchone()[0]
+    print(f"Foreign key constraint state: {fk_state}.")
+
+    if fk_state == 1:        
+        con.execute("PRAGMA foreign_keys = OFF;")
+        con.commit()
+        fk_state_expost: int = con.execute("""PRAGMA foreign_keys;""").fetchone()[0]
+        print(f"Foreign key constraint disabled: {fk_state_expost}.")
+    else:        
+        print("Foreign key constraint already disabled.")
+    
+    con.close()
+
 
 def write_html(label: str):
     if not isinstance(label, str):
