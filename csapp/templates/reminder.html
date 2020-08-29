@@ -53,6 +53,41 @@
                             <label for="content_cell_2">Description</label>
                             <textarea name="content_cell_2" id="content_cell_2" placeholder="Type your text here..." oninput="autoGrow(this)" class="add-item-input"></textarea>
                         </div>
+
+                        <div>
+                            <label for="lang">Programming language</label>
+                            <input type="text" name="lang" id="lang" placeholder="'py' by default" class="add-item-input">
+                        </div>
+
+                        <div>
+                            <label for="syntax_content">Syntax (content)</label>
+                            <textarea name="syntax_content" id="syntax_content" placeholder="Type the syntax here" oninput="autoGrow(this)" class="add-item-input"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="example_caption">Example (caption)</label>
+                            <textarea name="example_caption" id="example_caption" placeholder="Type the example caption here" oninput="autoGrow(this)" class="add-item-input"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="example_content">Example (content)</label>
+                            <textarea name="example_content" id="example_content" placeholder="Type the example here" oninput="autoGrow(this)" class="add-item-input"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="link_text">Link (text)</label>
+                            <textarea name="link_text" id="link_text" oninput="autoGrow(this)" class="add-item-input"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="link_href">Link (href)</label>
+                            <textarea name="link_href" id="link_href" oninput="autoGrow(this)" class="add-item-input"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="link_type">Link (type)</label>
+                            <textarea name="link_type" id="link_type" placeholder="'code' by default" oninput="autoGrow(this)" class="add-item-input"></textarea>
+                        </div>                        
                     
                         <div>
                             <input type="hidden" name="label" value="{{ lower_label }}">
@@ -75,7 +110,7 @@
                             </thead>
                             <tbody>
                                 {% for item in items_by_h1 %}
-                                <tr>
+                                <tr data-lang="{{ item.lang }}" data-syntax-content="{{ item.syntax_content }}" data-example-content="{{ item.example_content }}" data-example-caption="{{ item.example_caption }}" data-link-text="{{ item.link_text }}" data-link-href="{{ item.link_href }}" data-link-type="{{ item.link_type }}">
                                     <td>{{ item.content_cell_1 }}</td>
                                     <td>{{ item.content_cell_2 }}</td>
                                 </tr>
@@ -89,12 +124,11 @@
                 <div id="modal" class="modal">
 
                     <div class="modal-header">
-                      <div class="title">Info</div>
+                      <div class="title"></div>
                       <button data-close-button type="button" class="close-btn">&times;</button>
                     </div>
         
                     <div class="modal-body">
-                        <p>Hello World!</p>
                     </div>
         
                 </div>
