@@ -36,13 +36,13 @@ def index():
         items: list = [models.IndexItem(**row) for row in res]
         con.close()
 
-        # Create HTML file if it does not yet exist
-        filenames: list = [f"{item.label.lower()}.html" for item in items]
+        # # Create HTML file if it does not yet exist
+        # filenames: list = [f"{item.label.lower()}.html" for item in items]
 
-        for filename in filenames:
-            if not os.path.exists(f"./csapp/templates/{filename}"):
-                with open(f"./csapp/templates/{filename}", mode='w') as f:
-                    f.write(utils.write_html(label=filename[:-5]))
+        # for filename in filenames:
+        #     if not os.path.exists(f"./csapp/templates/{filename}"):
+        #         with open(f"./csapp/templates/{filename}", mode='w') as f:
+        #             f.write(utils.write_html(label=filename[:-5]))
 
         # labels: list = [item.label.lower() for item in items]
 
@@ -60,16 +60,16 @@ def reminder(label: str):
 
     if (request.method == 'POST'):
         # Retrieve submitted values and store them in a `Reminder` instance
-        # new_item = models.Reminder(**request.form)
-        new_item = models.Reminder(label=request.form['label'], 
-                                   h1=request.form['h1'], 
-                                   content_cell_1=request.form['content_cell_1'], 
-                                   content_cell_2=request.form['content_cell_2'])
+        new_item = models.Reminder(**request.form)
+        # new_item = models.Reminder(label=request.form['label'], 
+        #                            h1=request.form['h1'], 
+        #                            content_cell_1=request.form['content_cell_1'], 
+        #                            content_cell_2=request.form['content_cell_2'])
 
         # Push the item to the database
         try:
-            con.execute("""INSERT INTO `reminder` (id, label, h1, content_cell_1, content_cell_2) 
-                           VALUES (NULL, ?, ?, ?, ?);""", (new_item.label, new_item.h1, new_item.content_cell_1, new_item.content_cell_2))
+            con.execute("""INSERT INTO `reminder` (id, label, h1, content_cell_1, content_cell_2, lang, syntax_content, example_content, example_caption, link_text, link_href, link_type) 
+                           VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", (new_item.label, new_item.h1, new_item.content_cell_1, new_item.content_cell_2, new_item.lang, new_item.syntax_content, new_item.example_content, new_item.example_caption, new_item.link_text, new_item.link_href, new_item.link_type))
             # Save (commit) the changes
             con.commit()
             con.close()
