@@ -207,8 +207,11 @@ def commands(command_id: int):
     if len(command_examples) > 0:
         command_examples: list = [models.Example(**example) for example in command_examples]
 
+    query_command_lang: str = """SELECT lang FROM `commands` WHERE command_id = ?;"""
+    lang: dict = con.execute(query_command_lang, (command_id, )).fetchone()
+
     con.close()
-    return render_template('commands.html', command_examples=command_examples)
+    return render_template('commands.html', command_examples=command_examples, lang=lang['lang'])
 
 
 @app.route('/links/<int:command_id>')

@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     openModalButtons.forEach(button => {
         button.addEventListener('click', () => {
+            
             // Use the data attribute from the button with button.dataset
             const modal = document.querySelector(button.dataset.modalTarget);
             openModal(modal);
@@ -16,9 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
             appendSyntax(button, modalBody);
             appendExamples(button, modalBody);
             appendLinks(button, modalBody);
-            // modalBody.setAttribute('onload', 'hljs.initHighlightingOnLoad()');
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+              });
+            // modalBody.setAttribute('onload', 'hljs.initHighlightingOnLoad();');
         });
-    });    
+    });
+    
+    
 
     closeModalButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -169,7 +175,9 @@ const getDataExamples = (xhttp) => {
     div.innerHTML = xhttp.responseText;
     const referenceNode = document.getElementById("add-example-to-command");
     referenceNode.parentNode.insertBefore(div, referenceNode.nextSibling);
-    // document.getElementById("modal").lastElementChild.append(div);
+    document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+    });
 };
 
 const getDataLinks = (xhttp) => {
@@ -178,7 +186,6 @@ const getDataLinks = (xhttp) => {
 
     const referenceNode = document.getElementById("add-link-to-command");
     referenceNode.parentNode.insertBefore(div, referenceNode.nextSibling);
-    // document.getElementById("modal").lastElementChild.append(div);
 };
 
 
