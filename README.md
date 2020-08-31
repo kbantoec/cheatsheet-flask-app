@@ -15,6 +15,24 @@
 * `.flaskenv` is where we set up our environment variables for the Flask backend (works only if `python-dotenv` installed)
 * A Flask based API backend was added in the `server` directory.
 
+## Table modification workflow
+
+1. Modify the structure in `models.py`
+2. Modify the CLI command to create the table in `utils.py`
+3. `reminder.html`template.
+   1. Modify the form
+   2. Modify the data-* attributes
+4. Modify the requests in `views.py`
+5. Add relevant functionalities in corresponding javascript file
+
+## Creation of the database
+
+Using the CLI:
+
+1. `flask reinit-db`
+2. `flask init-db`
+3. `flask test-db`
+
 ## Flask CLI commands
 
 I have added a CLI command in  the `__init__.py` file:
@@ -36,6 +54,10 @@ Commands:
   routes                  Show the routes for the app.
   run                     Run a development server.
   shell                   Run a shell in the app context.
+```
+
+```powershell
+> flask create-indexitem-table
 ```
 
 
@@ -79,6 +101,23 @@ Run them on the PowerShell terminal at the root of the project:
 [(1, 'Pandas')]
 ```
 
+```python
+from csapp import app
+import sqlite3
+con = sqlite3.connect(app.config['DATABASE_URI'])
+con.execute("SELECT * FROM index_items;").fetchall()
+con.execute("SELECT * FROM indexitem").fetchall()
+con.execute("DELETE FROM `indexitem` WHERE id = 4;")
+con.commit()
+con.execute("SELECT * FROM indexitem").fetchall()
+
+
+con.execute("SELECT name FROM sqlite_master;").fetchall()
+con.execute("SELECT 'DROP TABLE ' || name || ';' from sqlite_master WHERE type = 'table';")
+```
+
+
+
 Other flask CLI commands: 
 
 ```powershell
@@ -87,10 +126,48 @@ Other flask CLI commands:
 > flask routes
 ```
 
+```powershell
+> $env:FLASK_APP = "run.py"
+> $env:FLASK_ENV = "development"
+> flask create-reminder-table
+> flask shell
+>>> from csapp import app
+>>> import sqlite3
+>>> app.config
+>>> con = sqlite3.connect(app.config['DATABASE_URI'])
+>>> con.execute("SELECT * FROM `reminder`").fetchall()
+[]
+>>> con.execute("INSERT INTO `reminder` VALUES (NULL, 'pandas', 'pandas.Series', 'pandas.Series.value_counts', 'Return a Series containing counts of unique values.');")
+<sqlite3.Cursor object at 0x0000028FCAC90180>
+>>> con.commit()
+>>> con.execute("SELECT * FROM `reminder`").fetchall()    
+[(1, 'pandas', 'pandas.Series', 'pandas.Series.value_counts', 'Return a Series containing counts of unique values.')]
+>>> con.execute("DELETE FROM `reminder` WHERE id = 1;")
+<sqlite3.Cursor object at 0x0000028FCAC90180>
+>>> con.commit()
+>>> con.execute("SELECT * FROM `reminder`").fetchall()
+[]
+>>> con.close()
+>>> exit()
+>>> con.execute("INSERT INTO `reminder` VALUES (NULL, 'pandas', '<code>pandas.DataFrame</code>', '<code>pandas.DataFrame.apply</code>', 'Apply a function along an axis of the DataFrame.');")
+```
+
 
 
 ## Documentation
 
 * `sqlite3`:
   * [Official documentation](https://docs.python.org/3/library/sqlite3.html)
+  
   * [SQLite Tutorial documentation](https://www.sqlitetutorial.net/sqlite-python/)
+  
+  * How to create foreign keys?
+  
+    * [Python MySQL Tutorial - Foreign Keys & Relating Tables](https://www.youtube.com/watch?v=f7oYCzKuv-w)
+  
+      ```sqlite
+      CREATE TABLE Users (id int PRIMARY KEY AUTO_INCREMENT, name VARCHAR(50), passwd VARCHAR(50));
+      CREATE TABLE Scores (userId int PRIMARY KEY, FOREIGN KEY(userId) REFERENCES Users(id), game1 int DEFAULT 0, game2 int DEFAULT 0);
+      ```
+  
+      

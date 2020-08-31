@@ -27,9 +27,9 @@
 
             {% for item in items %}
             
-            <a href="./reminder/{{ item.lower_label }}">
+            <a href="./cheatsheet/{{ item.item_label }}">
                 <div>
-                    <p>{{ item.label }}</p>
+                    <p>{{ item.item_label|capitalize }}</p>
                 </div>
             </a>
 

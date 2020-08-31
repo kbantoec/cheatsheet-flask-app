@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+    <title>Links</title>
+{% endblock %}
+
+{% block body %}
+    <div id="links-container">        
+        <div>
+            <ul class="fa-ul">
+                {% for link in command_links %}
+                <li data-link-id="{{ link.link_id }}"><span class="fa-li"><i class="fa fa-file-{{ link.link_type }}-o"></i></span> <a href="{{ link.link_href }}" target="_blank">{{ link.link_label }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>   
+    </div>
+{% endblock %}

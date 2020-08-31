@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+    <title>Commands</title>
+{% endblock %}
+
+{% block body %}
+    <div id="examples-container">
+        {% for example in command_examples %}
+        <div data-example-id="{{ example.example_id }}">
+            <h2>{{ example.example_caption }}</h2>
+            <pre><code class="py">{{ example.example_content }}</code></pre>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

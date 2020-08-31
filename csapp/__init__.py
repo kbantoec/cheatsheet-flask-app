@@ -36,13 +36,15 @@ def drop_reminder_table_data():
 
 @app.cli.command()
 def init_db():
-    """Initialize the database."""
-    utils.enable_fk(app)
-    utils.create_index_items_table(app)
-    utils.create_commands_table(app)
-    utils.create_examples_table(app)
-    utils.create_links_table(app)
-    print("Database initialized!")
+    """Initialize the database with all tables."""
+    utils.init_db(app)
+    # utils.enable_fk(app)
+    # utils.create_index_items_table(app)
+    # utils.create_commands_table(app)
+    # utils.create_examples_table(app)
+    # utils.create_links_table(app)
+    # print("Database initialized!")
+
     # utils.create_examples_table(app)
     # utils.create_links_table(app)
     # utils.create_commands_examples_table(app)
@@ -58,12 +60,19 @@ def drop_database():
 
 @app.cli.command()
 def reinit_db():
-    """Overwrite the database file."""
-    db_uri: str = app.config['DATABASE_URI']
+    """Overwrite the database file and initialize all tables again."""
+    utils.reinit_db(app)
+    # db_uri: str = app.config['DATABASE_URI']
+    #
+    # with open(db_uri, mode="w"):
+    #     # The "w" method will overwrite the entire file.
+    #     print("Database reinitialized!")
 
-    with open(db_uri, mode="w"):
-        # The "w" method will overwrite the entire file.
-        print("Database reinitialized!")
+
+@app.cli.command()
+def reset_db():
+    """Overwrite the database file."""
+    utils.reset_db(app)
 
 
 @app.cli.command()

@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/reminder.css', _external=True) }}">
-    <title>{{ capitalized_label }} Reminder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cheatsheet.css', _external=True) }}">
+    <title>{{ label|capitalize }} Cheatsheet</title>
 {% endblock %}
 
 {% block body %}
@@ -22,7 +22,7 @@
                       </div>
                 </nav>
                 <div class="main-title">
-                    <h1>{{ capitalized_label }}</h1>
+                    <h1>{{ label|capitalize }}</h1>
                 </div>
             </div>
         </header>
@@ -45,13 +45,13 @@
                         </div>
                     
                         <div>
-                            <label for="content_cell_1">Command</label>
-                            <textarea name="content_cell_1" id="content_cell_1" placeholder="Type your text here..." oninput="autoGrow(this)" class="add-item-input"></textarea>
+                            <label for="command">Command</label>
+                            <textarea name="command" id="command" placeholder="Type your text here... (Enclose the command with a &lt;code&gt; tag)" oninput="autoGrow(this)" class="add-item-input"></textarea>
                         </div>
                     
                         <div>
-                            <label for="content_cell_2">Description</label>
-                            <textarea name="content_cell_2" id="content_cell_2" placeholder="Type your text here..." oninput="autoGrow(this)" class="add-item-input"></textarea>
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" placeholder="Type your text here..." oninput="autoGrow(this)" class="add-item-input"></textarea>
                         </div>
 
                         <div>
@@ -60,44 +60,19 @@
                         </div>
 
                         <div>
-                            <label for="syntax_content">Syntax (content)</label>
-                            <textarea name="syntax_content" id="syntax_content" placeholder="Type the syntax here" oninput="autoGrow(this)" class="add-item-input"></textarea>
+                            <label for="syntax">Syntax</label>
+                            <textarea name="syntax" id="syntax" placeholder="Type the syntax here" oninput="autoGrow(this)" class="add-item-input"></textarea>
                         </div>
-
-                        <div>
-                            <label for="example_caption">Example (caption)</label>
-                            <textarea name="example_caption" id="example_caption" placeholder="Type the example caption here" oninput="autoGrow(this)" class="add-item-input"></textarea>
-                        </div>
-
-                        <div>
-                            <label for="example_content">Example (content)</label>
-                            <textarea name="example_content" id="example_content" placeholder="Type the example here" oninput="autoGrow(this)" class="add-item-input"></textarea>
-                        </div>
-
-                        <div>
-                            <label for="link_label">Link label</label>
-                            <textarea name="link_label" id="link_label" oninput="autoGrow(this)" class="add-item-input"></textarea>
-                        </div>
-
-                        <div>
-                            <label for="link_href">Link (href)</label>
-                            <textarea name="link_href" id="link_href" oninput="autoGrow(this)" class="add-item-input"></textarea>
-                        </div>
-
-                        <div>
-                            <label for="link_type">Link type</label>
-                            <textarea name="link_type" id="link_type" placeholder="'code' by default" oninput="autoGrow(this)" class="add-item-input"></textarea>
-                        </div>                        
                     
                         <div>
-                            <input type="hidden" name="label" value="{{ lower_label }}">
+                            <input type="hidden" name="label" value="{{ label }}">
                             <input type="submit" value="Add the item to the cheatsheet" id="submit-btn-table-input">
                         </div>
                     </form>
                 </div>
 
-                {% if items|length > 0 %}
-                    {% for h1_title, items_by_h1 in items|groupby("h1") %}
+                {% if item_commands|length > 0 %}
+                    {% for h1_title, commands_by_h1 in item_commands|groupby("h1") %}
 
                         <h1 class="toc-item">{{ h1_title }}</h1>
                         
@@ -109,10 +84,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in items_by_h1 %}
-                                <tr data-lang="{{ item.lang }}" data-syntax-content="{{ item.syntax_content }}" data-example-content="{{ item.example_content }}" data-example-caption="{{ item.example_caption }}" data-link-text="{{ item.link_text }}" data-link-href="{{ item.link_href }}" data-link-type="{{ item.link_type }}">
-                                    <td>{{ item.content_cell_1 }}</td>
-                                    <td>{{ item.content_cell_2 }}</td>
+                                {% for command in commands_by_h1 %}
+                                <tr data-command-id="{{ command.command_id }}" data-syntax="{{ command.syntax }}" data-lang="{{ command.lang }}">
+                                    <td>{{ command.command }}</td>
+                                    <td>{{ command.description }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -128,8 +103,7 @@
                       <button data-close-button type="button" class="close-btn">&times;</button>
                     </div>
         
-                    <div class="modal-body">
-                    </div>
+                    <div class="modal-body" data-action-path="{{ path_action }}"></div>
         
                 </div>
         
@@ -162,5 +136,6 @@
                 alert('The form has been submitted!');
             };
         </script>
+        
     </div>
 {% endblock %}

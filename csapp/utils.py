@@ -14,6 +14,7 @@ def create_connection(db_file):
     :return: Connection object or None
     """
     con = None
+
     try:
         # Start connection with the database (also creates the file if it does not yet exist)
         con = sqlite3.connect(db_file)
@@ -79,6 +80,7 @@ def create_commands_table(app):
                         description TEXT,
                         syntax TEXT,
                         lang TEXT,
+                        h1 TEXT,
                         item_id INTEGER NOT NULL,
                         FOREIGN KEY (item_id)
                             REFERENCES `index_items` (item_id)
@@ -93,8 +95,8 @@ def create_examples_table(app):
 
     table: str = """CREATE TABLE IF NOT EXISTS `examples` (
                         example_id INTEGER PRIMARY KEY ASC,
-                        caption TEXT,
-                        content TEXT,
+                        example_caption TEXT,
+                        example_content TEXT,
                         command_id INTEGER NOT NULL,
                         FOREIGN KEY (command_id)
                             REFERENCES commands (command_id)
@@ -110,8 +112,8 @@ def create_links_table(app):
     table: str = """CREATE TABLE IF NOT EXISTS `links` (
                         link_id INTEGER PRIMARY KEY ASC,
                         link_label TEXT,
-                        href TEXT,
-                        type VARCHAR(5),
+                        link_href TEXT,
+                        link_type VARCHAR(5),
                         command_id INTEGER NOT NULL,
                         FOREIGN KEY (command_id)
                             REFERENCES commands (command_id)
@@ -158,6 +160,28 @@ def drop_links_table(app):
     drop_table(app, 'links')
 
 
+def init_db(app):
+    enable_fk(app)
+    create_index_items_table(app)
+    create_commands_table(app)
+    create_examples_table(app)
+    create_links_table(app)
+    print("Database initialized!")
+
+
+def reinit_db(app):
+    reset_db(app)
+    init_db(app)
+
+
+def reset_db(app):
+    db_uri: str = app.config['DATABASE_URI']
+
+    with open(db_uri, mode="w"):
+        # The "w" method will overwrite the entire file.
+        print("Database reinitialized!")
+
+
 def test_db(app):
     con = create_connection(app.config['DATABASE_URI'])
     
@@ -178,15 +202,15 @@ def test_db(app):
         print(con.execute("SELECT * FROM index_items;").fetchall())
 
         item_id: int = con.execute("SELECT item_id FROM index_items WHERE item_label = 'pandas';").fetchone()[0]
-        con.execute("""INSERT INTO commands (command, description, syntax, lang, item_id) 
-                       VALUES ('test', 'test desc', 'test syn', 'py', ?), 
-                              ('ma commande', 'ma description', 'ma syntaxe', 'py', ?),
-                              ('pandas.DataFrame', 'Create a DataFrame', 'pandas.DataFrame()', 'py', 2);""", 
-                    (item_id, item_id))
+        con.execute("""INSERT INTO commands (command, description, syntax, lang, h1, item_id) 
+                       VALUES ('test', 'test desc', 'test syn', 'py', 'test', 1), 
+                              ('ma commande', 'ma description', 'ma syntaxe', 'py', 'test', 1),
+                              ('<code>pandas.DataFrame</code>', 'Create a DataFrame', 'pandas.DataFrame()', 'py', 'pandas', ?);""",
+                    (item_id, ))
         con.commit()
         print(con.execute("SELECT * FROM commands;").fetchall())
                 
-        con.execute("""INSERT INTO examples (caption, content, command_id)
+        con.execute("""INSERT INTO examples (example_caption, example_content, command_id)
                        VALUES ('Print hello world', 'print(''hello world'')', 3);""")
         con.commit()
         print(con.execute("SELECT * FROM examples;").fetchall())
@@ -204,10 +228,21 @@ def test_db(app):
 
         con.execute("""UPDATE commands
                        SET command_id = 99
-                       WHERE command = 'pandas.DataFrame';""")
+                       WHERE command = '<code>pandas.DataFrame</code>';""")
         con.commit()
         print(con.execute("SELECT * FROM commands;").fetchall())
         print(con.execute("SELECT * FROM examples;").fetchall())
+
+        con.execute("""INSERT INTO links (link_label, link_href, link_type, command_id) 
+                       VALUES ('Official documentation', 
+                               'https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html',
+                               'code',
+                               99), 
+                               ('Youtube', 
+                               'avfrhbauhb',
+                               'video',
+                               99);""")
+        con.commit()
 
         # con.execute("""UPDATE examples
         #                SET example_id = 99

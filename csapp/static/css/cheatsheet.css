@@ -219,9 +219,10 @@ textarea:nth-child(n) {
 }
 
 #add-item-to-table {
-  background-color: lightseagreen;
+  background-color: gray;
   border-radius: 3px;
   border: solid 2px lightgray;
+  padding: 10px;
 }
 
 #add-item-to-table div:nth-child(n) {
@@ -239,7 +240,7 @@ textarea:nth-child(n) {
   min-height: 20px;
 }
 
-#submit-btn-table-input {
+#submit-btn-table-input, #submit-btn-example-input, #submit-btn-link-input {
   background-color: #2657eb;
   border-width: 0px;
   padding: 20px;
@@ -251,7 +252,7 @@ textarea:nth-child(n) {
   transition-duration: 500ms;
 }
 
-#submit-btn-table-input:hover {
+#submit-btn-table-input:hover, #submit-btn-example-input:hover, #submit-btn-link-input:hover {
   background-color: #89253e;
   transform: translate(3px, 3px);
 }
@@ -290,7 +291,7 @@ textarea:nth-child(n) {
 }
 
 .reminder-table tbody tr:nth-child(n):hover {
-  background-color: rgba(23, 28, 38, 1);
+  background-color: rgb(17, 20, 27);
 }
 
 .reminder-table tbody tr:nth-child(2n + 1) {
@@ -415,8 +416,13 @@ textarea:nth-child(n) {
   font-size: 1.25em;
 }
 
-.modal-body {
-  font-size: 0.8em;
+.modal-body h1 {
+  font-size: 1.3em;
+  text-decoration: underline;
+}
+
+.modal-body h2 {
+  font-size: 1em;
 }
 
 #overlay {
@@ -449,4 +455,33 @@ textarea:nth-child(n) {
 
 .modalBtn:hover {
   transform: scale(1.2);
+}
+
+#add-example-to-command, #add-link-to-command {
+  background-color: gray;
+  padding: 20px;
+  padding-right: 25px;
+  font-family: 'Lato', sans-serif;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+#add-example-to-command div:nth-child(n), #add-link-to-command  div:nth-child(n) {
+  padding: 10px;
+}
+
+#add-example-to-command div label, #add-link-to-command  div label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#links-container a {
+  text-decoration: none;
+  color: lightgray;
+}
+
+#links-container a:hover {
+  text-decoration: underline;
+  color: white;
 }
