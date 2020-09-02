@@ -283,7 +283,7 @@ textarea:nth-child(n) {
 }
 
 .reminder-table td {
-  padding: 15px;
+  padding: 0px 15px;
 }
 
 .reminder-table tbody {
@@ -365,15 +365,6 @@ textarea:nth-child(n) {
     animation: heartbeating infinite 1s alternate;
   }
 }
-
-/* .modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  background-color: blue;
-  transform: translate(-50%, -50%);
-
-} */
 
 .modal {
   position: fixed;
@@ -484,4 +475,131 @@ textarea:nth-child(n) {
 #links-container a:hover {
   text-decoration: underline;
   color: white;
+}
+
+.toggle-down-options {
+  display: none;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  margin-left: -45px;
+  font-size: 1.5em;
+  /* text-align: center;
+  vertical-align: middle; */
+  border-radius: 20px;
+  color: #171c26;
+  border-color: #171c26;
+  background-color: lightgray;
+  transition-property: color, transform, background-color, width, height, border-radius;
+  transition-timing-function: ease-in-out;
+  transition-duration: 500ms;
+  cursor: pointer;
+}
+
+.toggle-down-options i {
+  transition-property: transform;
+  transition-timing-function: ease-in-out;
+  transition-duration: 500ms;
+}
+
+.toggle-down-options .triangle {
+  margin: auto;
+}
+
+.toggle-down-options:hover .triangle {
+  color: #2657eb;
+  transform: rotate(90deg) translate(0px, -20px);
+  /* transform: scale(1.1) rotate(90deg); */
+  /* background-color: white; */
+}
+
+.toggle-down-options:hover {
+  background-color: white;
+  transform: translate(-50px, -25px);
+  height: 100px;
+  width: 100px;
+  border-radius: 50px;
+}
+
+.reminder-table tbody tr:nth-child(n):hover .toggle-down-options {
+  display: grid;
+  margin-top: 5px;
+}
+
+.reminder-table tbody tr:nth-child(2n + 1):hover .toggle-down-options {
+  display: grid;
+  margin-top: 5px;
+}
+
+.command-options {
+  position: absolute;
+  margin-left: 20px;
+  font-size: 1em;
+  cursor: pointer;
+  color: #2657eb;
+}
+/* 
+
+.delete-command-btn {
+  transition-property: transform;
+  transition-timing-function: ease-in-out;
+  transition-duration: 500ms;
+}
+
+.delete-command-btn:hover {
+  transform: scale(1.2), rotate(90deg);
+} */
+
+.delete-command-btn {
+  /* color: #de6161; */
+  margin-top: 15px;
+}
+
+.update-command-btn {
+  /* color: rgba(142, 68, 173, 1);; */
+  margin-top: 50px;  
+}
+
+.toggle-down-options > a {
+  visibility: hidden;
+  opacity: 0;
+  /* transition: <property> || <duration> || <timing-function> || <delay> [, ...]; */
+  transition: color 500ms ease-in-out 0s;
+  transition: visibility 500ms ease-in-out 500ms;
+  transition: opacity 500ms ease-in-out 500ms;
+}
+
+.toggle-down-options:hover > a {
+  visibility: visible;
+  opacity: 1;
+}
+
+.toggle-down-options > a:hover {
+  color: #de6161;
+}
+
+.example-options, .link-options {
+  font-size: 1em;
+  color: lightgray;
+  transition-timing-function: ease;
+  transition-duration: 300ms;
+  transition-property: color;
+}
+
+.example-options:hover, .link-options:hover {
+  color: #de6161;
+}
+
+.example-options > i, .link-options > i {
+  transition-timing-function: ease;
+  transition-duration: 300ms;
+  transition-property: transform;
+}
+
+.example-options:hover > i, .link-options:hover > i {
+  transform: scale(1.3) rotate(15deg);
+}
+
+.delete-example-btn, .delete-link-btn {
+  padding-right: 20px;
 }

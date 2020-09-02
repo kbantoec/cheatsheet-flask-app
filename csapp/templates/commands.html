@@ -10,7 +10,7 @@
 {% block body %}
     <div id="examples-container">
         {% for example in command_examples %}
-        <div data-example-id="{{ example.example_id }}">
+        <div class="example-div" data-example-id="{{ example.example_id }}">
             <h2>{{ example.example_caption }}</h2>
             <pre><code class="{{ lang }}">{{ example.example_content }}</code></pre>
         </div>

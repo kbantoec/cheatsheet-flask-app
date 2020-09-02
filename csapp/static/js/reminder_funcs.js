@@ -28,6 +28,7 @@ const addExamplesToCommand = (element) => {
     }
 };
 
+
 const addLinksToCommand = (element) => {
     const forms = document.getElementsByTagName('form');
     
@@ -36,4 +37,11 @@ const addLinksToCommand = (element) => {
         const instruction2 = (element.innerHTML === `<i class="fa fa-plus-square"></i>`) ? element.innerHTML = `<i class="fa fa-minus-square"></i>` : element.innerHTML = `<i class="fa fa-plus-square"></i>`;
         return (instruction1) && (instruction2);
     }
+};
+
+
+const noneToBlock = (arr) => {
+    arr.forEach(element => {
+        return (element.style.display === "block") ? element.style.display = "none" : element.style.display = "block";
+    });
 };

@@ -29,7 +29,7 @@ nav p {
   padding: 10px;
 }
 
-.container a {
+.show-item {
   display: grid;
   margin: auto;
   text-decoration: none;
@@ -46,21 +46,23 @@ nav p {
   width: 200px;
 }
 
-.container a:nth-child(2n+1) {
-  background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #0083B0, #00B4DB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+.show-item:nth-child(2n+1) {
+  /* background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);  
+  background: linear-gradient(to right, #0083B0, #00B4DB);  */
+  background-color: #2657eb;
 }
 
-.container a:nth-child(2n) {
-  background: -webkit-linear-gradient(to left, #0083B0, #00B4DB);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, #0083B0, #00B4DB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+.show-item:nth-child(2n) {
+  /* background: -webkit-linear-gradient(to left, #0083B0, #00B4DB);
+  background: linear-gradient(to left, #0083B0, #00B4DB); */
+  background-color: #2657eb;
 }
 
-.container a:hover {
+.show-item:hover {
   transform: scale(1.05);
 }
 
-.container a div:nth-child(n) {
+.show-item div:nth-child(n) {
   margin: auto;
   color: lightgray;
   font-weight: bold;
@@ -128,4 +130,33 @@ input {
   transform: scale(1.1);
   background: white;
   color: #00B4DB;
+}
+
+.option-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.options {
+  display: inline;
+  text-decoration: none;
+  margin: 20px 10px;
+  cursor: pointer;
+  font-size: 0.6em;
+  background-color: transparent;
+  color: lightgray;
+  transition-property: color, transform;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+}
+
+.options:hover {
+  color: #de6161;
+  transform: scale(1.5) rotate(15deg);
+}
+
+.options i {
+  display: inline;
 }

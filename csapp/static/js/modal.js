@@ -6,24 +6,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById('overlay');
 
     openModalButtons.forEach(button => {
+        // Give each button the ability to have an onclick event that opens and closes a modal
         button.addEventListener('click', () => {
             
-            // Use the data attribute from the button with button.dataset
             const modal = document.querySelector(button.dataset.modalTarget);
             openModal(modal);
-            const modalBody = modal.lastElementChild;
-            
-    
+
+            const modalBody = modal.lastElementChild;            
             appendSyntax(button, modalBody);
             appendExamples(button, modalBody);
             appendLinks(button, modalBody);
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightBlock(block);
-              });
-            // modalBody.setAttribute('onload', 'hljs.initHighlightingOnLoad();');
+              });            
         });
     });
-    
     
 
     closeModalButtons.forEach(button => {
@@ -65,7 +62,7 @@ const closeModal = (modal) => {
 const appendSyntax = (button, element) => {
     // For JS console:
     // let tr = document.querySelectorAll('[data-modal-target]')[0].parentElement.parentElement;
-    const tr = button.parentElement.parentElement;
+    const tr = button.parentElement.parentElement.parentElement;
 
     if (tr.dataset.syntax.length > 0) {
         const lang = tr.dataset.lang;
@@ -147,7 +144,7 @@ const subItemAddBtn = (subItemLabel, func) => {
 
 const appendExamples = (button, element) => {
     // Retrieve parent data-* attributes from parent table row
-    const tr = button.parentElement.parentElement;
+    const tr = button.parentElement.parentElement.parentElement;
 
     // Create section title
     const h1 = document.createElement('h1');
@@ -165,19 +162,59 @@ const appendExamples = (button, element) => {
     element.append(exampleDivBtn);
     element.append(form);
 
-    // Show examples from GET request
+    // Show examples from GET request by adding them after the form tag with 'add-example-to-command' id
     loadDoc('/commands/' + tr.dataset.commandId, getDataExamples);
+};
+
+
+const addOptionsBtns = (optionLabel) => {
+    const divs = document.getElementsByClassName(`${optionLabel}-div`);
+
+    Object.entries(divs).forEach((entry) => {
+        const div = entry[1];
+
+        const optionBtnsDiv = document.createElement('div');
+        optionBtnsDiv.setAttribute('class', 'option-btns-div');
+
+        let deleteBtn;
+        let updateBtn;
+
+        switch(optionLabel) {
+            case 'example':
+                // Delete button
+                deleteBtn = createOptionBtn('delete', optionLabel, div.dataset.exampleId);                
+                // Update button
+                updateBtn = createOptionBtn('update', optionLabel, div.dataset.exampleId);
+                break;
+            case 'link':
+                // Delete button
+                deleteBtn = createOptionBtn('delete', optionLabel, div.dataset.linkId);                
+                // Update button
+                updateBtn = createOptionBtn('update', optionLabel, div.dataset.linkId);
+        }      
+        
+        // Add the buttons to the div element
+        optionBtnsDiv.append(deleteBtn);
+        optionBtnsDiv.append(updateBtn);
+        div.append(optionBtnsDiv);
+    });
 };
 
 
 const getDataExamples = (xhttp) => {
     const div = document.createElement('div');
     div.innerHTML = xhttp.responseText;
+    const examplesContainer = div.lastElementChild;
     const referenceNode = document.getElementById("add-example-to-command");
-    referenceNode.parentNode.insertBefore(div, referenceNode.nextSibling);
+    const modalBody = referenceNode.parentNode;
+    modalBody.insertBefore(examplesContainer, referenceNode.nextSibling);
+
+    // Highlight code
     document.querySelectorAll('pre code').forEach((block) => {
         hljs.highlightBlock(block);
     });
+
+    addOptionsBtns('example');
 };
 
 const getDataLinks = (xhttp) => {
@@ -185,7 +222,9 @@ const getDataLinks = (xhttp) => {
     div.innerHTML = xhttp.responseText;
 
     const referenceNode = document.getElementById("add-link-to-command");
-    referenceNode.parentNode.insertBefore(div, referenceNode.nextSibling);
+    referenceNode.parentNode.insertBefore(div.lastElementChild, referenceNode.nextSibling);
+
+    addOptionsBtns('link');
 };
 
 
@@ -219,7 +258,7 @@ const createLinksForm = (actionPath, commandId) => {
 
 const appendLinks = (button, element) => {
     // Retrieve parent data-* attributes from parent table row
-    const tr = button.parentElement.parentElement;
+    const tr = button.parentElement.parentElement.parentElement;
 
     // Create section title
     const h1 = document.createElement('h1');

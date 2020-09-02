@@ -53,58 +53,6 @@ def index():
         return render_template('index.html', items=items)
 
 
-@app.route('/reminder/<string:label>', methods=['GET', 'POST'])
-def reminder(label: str):
-    con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
-
-    # Allows to pull request results in `dict` form
-    con.row_factory = utils.dict_factory
-
-    capitalized_label: str = label.capitalize()
-    lower_label: str =label.lower()
-    path: str = f"/reminder/{label.lower()}"
-
-    if (request.method == 'POST'):
-        # Build a `IndexItem` object (retrieve its `item_id`)
-        query_index_item: str = "SELECT * FROM `index_items` WHERE item_label = ?;"
-        res: dict = con.execute(query_index_item, (label, )).fetchone()  # E.g.: {'item_id': 1, 'item_label': 'pandas'}
-        index_item = models.IndexItem(**res)
-
-        # Create a Link object
-
-
-        # Retrieve submitted values and store them in a `Reminder` instance
-        # new_item = models.Reminder(**request.form)
-        # new_item = models.Reminder(label=request.form['label'],
-        #                            h1=request.form['h1'],
-        #                            content_cell_1=request.form['content_cell_1'],
-        #                            content_cell_2=request.form['content_cell_2'])
-
-        try:
-            # Push the item to the database
-            con.execute("""INSERT INTO `reminder` (id, label, h1, content_cell_1, content_cell_2, lang, syntax_content, example_content, example_caption, link_text, link_href, link_type) 
-                           VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", (new_item.label, new_item.h1, new_item.content_cell_1, new_item.content_cell_2, new_item.lang, new_item.syntax_content, new_item.example_content, new_item.example_caption, new_item.link_text, new_item.link_href, new_item.link_type))
-            # Save (commit) the changes
-            con.commit()
-            con.close()
-            # Redirect to the reminder
-            return redirect(path)
-        except Exception as e:
-            print(f"There was a problem adding your item. Error: {e}.", file=sys.stderr)
-            con.close()
-    else:
-        res: sqlite3.Cursor = con.execute("SELECT * FROM `reminder` WHERE label = ?;", (label, ))
-        items: list = sorted([models.Reminder(**row) for row in res], key=lambda el: el.h1)
-        unique_titles: list = list(set([item.h1 for item in items]))
-        con.close()
-        return render_template('reminder.html',
-                               capitalized_label=capitalized_label,
-                               lower_label=lower_label,
-                               path_action=path,
-                               items=items,
-                               unique_titles=unique_titles)
-
-
 @app.route('/cheatsheet/<string:label>', methods=['GET', 'POST'])
 def cheatsheet(label: str):
     con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
@@ -196,6 +144,7 @@ def cheatsheet(label: str):
 
 @app.route('/commands/<int:command_id>')
 def commands(command_id: int):
+    """Needed to send AJAX requests."""
     con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
     con.row_factory = utils.dict_factory
 
@@ -216,6 +165,7 @@ def commands(command_id: int):
 
 @app.route('/links/<int:command_id>')
 def links(command_id: int):
+    """Needed to send AJAX requests."""
     con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
     con.row_factory = utils.dict_factory
 
@@ -229,3 +179,91 @@ def links(command_id: int):
 
     con.close()
     return render_template('links.html', command_links=command_links)
+
+
+@app.route('/delete_command/<int:command_id>', methods=['GET', 'POST'])
+def delete_command(command_id: int):
+    con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
+    con.row_factory = utils.dict_factory
+
+    # Grab label for redirection purposes
+    query_item_id: str = "SELECT item_id FROM `commands` WHERE command_id = ?;"
+    item_id: int = con.execute(query_item_id, (command_id,)).fetchone()['item_id']
+    # Having the item_id allows us to find the label
+    query_item_label: str = "SELECT item_label FROM `index_items` WHERE item_id = ?"
+    label: str = con.execute(query_item_label, (item_id,)).fetchone()['item_label']
+    path: str = f"/cheatsheet/{label}"
+
+    try:
+        # Delete command
+        con.execute("DELETE FROM `commands` WHERE command_id = ?;", (command_id, ))
+        con.commit()
+        con.close()
+        return redirect(path)
+    except sqlite3.Error as e:
+        print(f"Failed to delete command with id {command_id}. Error: {e}.", file=sys.stderr)
+
+
+@app.route('/delete_item/<int:item_id>', methods=['GET', 'POST'])
+def delete_item(item_id: int):
+    con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
+    con.row_factory = utils.dict_factory
+
+    try:
+        # Delete item
+        con.execute("DELETE FROM `index_items` WHERE item_id = ?;", (item_id,))
+        con.commit()
+        con.close()
+        return redirect('/')
+    except sqlite3.Error as e:
+        print(f"Failed to delete command with id {item_id}. Error: {e}.", file=sys.stderr)
+        con.close()
+
+
+@app.route('/delete_example/<int:example_id>', methods=['GET', 'POST'])
+def delete_example(example_id: int):
+    con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
+    con.row_factory = utils.dict_factory
+
+    # Grab label for redirection purposes
+    query_command_id: str = "SELECT command_id FROM `examples` WHERE example_id = ?;"
+    command_id: int = con.execute(query_command_id, (example_id,)).fetchone()['command_id']
+    query_item_id: str = "SELECT item_id FROM `commands` WHERE command_id = ?;"
+    item_id: int = con.execute(query_item_id, (command_id,)).fetchone()['item_id']
+    query_item_label: str = "SELECT item_label FROM `index_items` WHERE item_id = ?"
+    label: str = con.execute(query_item_label, (item_id,)).fetchone()['item_label']
+    path: str = f"/cheatsheet/{label}"
+
+    try:
+        # Delete item
+        con.execute("DELETE FROM `examples` WHERE example_id = ?;", (example_id,))
+        con.commit()
+        con.close()
+        return redirect(path)
+    except sqlite3.Error as e:
+        print(f"Failed to delete example with id {example_id}. Error: {e}.", file=sys.stderr)
+        con.close()
+
+@app.route('/delete_link/<int:link_id>', methods=['GET', 'POST'])
+def delete_link(link_id: int):
+    con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
+    con.row_factory = utils.dict_factory
+
+    # Grab label for redirection purposes
+    query_command_id: str = "SELECT command_id FROM `links` WHERE link_id = ?;"
+    command_id: int = con.execute(query_command_id, (link_id,)).fetchone()['command_id']
+    query_item_id: str = "SELECT item_id FROM `commands` WHERE command_id = ?;"
+    item_id: int = con.execute(query_item_id, (command_id,)).fetchone()['item_id']
+    query_item_label: str = "SELECT item_label FROM `index_items` WHERE item_id = ?"
+    label: str = con.execute(query_item_label, (item_id,)).fetchone()['item_label']
+    path: str = f"/cheatsheet/{label}"
+
+    try:
+        # Delete item
+        con.execute("DELETE FROM `links` WHERE link_id = ?;", (link_id,))
+        con.commit()
+        con.close()
+        return redirect(path)
+    except sqlite3.Error as e:
+        print(f"Failed to delete link with id {link_id}. Error: {e}.", file=sys.stderr)
+        con.close()

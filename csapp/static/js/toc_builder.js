@@ -40,19 +40,38 @@ const reinterpretTextAsHTML = () => {
         tocItems[i].innerHTML = tocItems[i].innerText;
     }
 
-    // for (let i = 0; i < tds.length; i++) {
-    //     tds[i].innerHTML = tds[i].innerText;
-    //     if (i % 2 !== 0) {
-    //         addModalBtn(tds[i]);
-    //     }
-    // }
+    for (let i = 0; i < tds.length; i++) {
+        // Convert input text to HTML
+        tds[i].innerHTML = tds[i].innerText;
 
-    for (let i = 0; i < tds.length; i++) {  
-        tds[i].innerHTML = tds[i].innerText;      
+        // Insert it in a <p> tag
+        const par = document.createElement('p');
+        par.innerHTML = tds[i].innerHTML;
+        tds[i].innerHTML = '';
+        tds[i].append(par);
+
         if (i % 2 !== 0) {
             // Appends the modal button if it is a cell of the second column in the table
             const btn = `<button data-modal-target="#modal" class="modalBtn"><span><i class="fa fa-info-circle"></i></span></button>`;
-            tds[i].innerHTML += btn;
+            tds[i].firstElementChild.innerHTML += btn;
+        } else {
+            const tr = tds[i].parentElement;
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.setAttribute('class', 'toggle-down-options');
+            const iconBtn = document.createElement('i');
+            iconBtn.setAttribute('class', 'fa fa-caret-down triangle');
+            optionsDiv.append(iconBtn);
+
+            // Delete button
+            const deleteBtn = createOptionBtn('delete', 'command', tr.dataset.commandId);
+
+            // Update button
+            const updateBtn = createOptionBtn('update', 'command', tr.dataset.commandId);
+
+            optionsDiv.append(deleteBtn);
+            optionsDiv.append(updateBtn);
+            tds[i].insertBefore(optionsDiv, tds[i].lastElementChild);
         }
     }
 };
@@ -61,9 +80,3 @@ const reinterpretTextAsHTML = () => {
 const getBaseUri = () => {
     return document.getElementsByClassName('main-title')[0].firstChild["baseURI"];
 };
-
-
-// const addModalBtn = (element) => {
-//     const btn = `<button data-modal-target="#modal" class="modalBtn"><span><i class="fa fa-info-circle"></i></span></button>`;
-//     element.innerHTML = element.innerText + "&nbsp;" + btn;
-// };
