@@ -86,7 +86,7 @@ const appendSyntax = (button, element) => {
 };
 
 
-const createFormEntry = (form, labelText, attrValue) => {
+const createFormEntry = (formToBeModified, labelText, attrValue) => {
     const div = document.createElement('div');
     const label = document.createElement('label');
     label.setAttribute('for', attrValue);
@@ -99,7 +99,25 @@ const createFormEntry = (form, labelText, attrValue) => {
     textarea.setAttribute('class', 'add-item-input')
     div.append(label);
     div.append(textarea);
-    form.append(div);
+    formToBeModified.append(div);
+};
+
+
+const createHiddenInput = (name, value) => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', name);
+    input.setAttribute('value', value);
+    return input;
+};
+
+
+const createInput = (name, value, type) => {
+    const input = document.createElement('input');
+    input.setAttribute('type', type);
+    input.setAttribute('name', name);
+    input.setAttribute('value', value);
+    return input;
 };
 
 
@@ -112,17 +130,17 @@ const createExamplesForm = (actionPath, commandId) => {
 
     createFormEntry(form, 'Example caption', 'example_caption');
     createFormEntry(form, 'Example content', 'example_content');
+    const hiddenInput = createHiddenInput('command_id', commandId);
+    const hiddenFormName = createHiddenInput('formName', 'create new example');
 
-    submitDiv = document.createElement('div');
-    hiddenInput = document.createElement('input');
-    hiddenInput.setAttribute('type', 'hidden');
-    hiddenInput.setAttribute('name', 'command_id');
-    hiddenInput.setAttribute('value', commandId);
-    submitDiv.append(hiddenInput);
-    submitInput = document.createElement('input');
+    const submitInput = document.createElement('input');
     submitInput.setAttribute('type', 'submit');
     submitInput.setAttribute('value', 'Add the example to the command.');
     submitInput.setAttribute('id', 'submit-btn-example-input');
+
+    const submitDiv = document.createElement('div');
+    submitDiv.append(hiddenInput);
+    submitDiv.append(hiddenFormName)
     submitDiv.append(submitInput);
     form.append(submitDiv);
 
@@ -237,18 +255,18 @@ const createLinksForm = (actionPath, commandId) => {
 
     createFormEntry(form, 'Link label', 'link_label');
     createFormEntry(form, 'Link href', 'link_href');
-    createFormEntry(form, 'Link type', 'link_type');
-
-    submitDiv = document.createElement('div');
-    hiddenInput = document.createElement('input');
-    hiddenInput.setAttribute('type', 'hidden');
-    hiddenInput.setAttribute('name', 'command_id');
-    hiddenInput.setAttribute('value', commandId);
-    submitDiv.append(hiddenInput);
-    submitInput = document.createElement('input');
+    createFormEntry(form, 'Link type', 'link_type');    
+    const hiddenInput = createHiddenInput('command_id', commandId);
+    const hiddenFormName = createHiddenInput('formName', 'create new link');
+    
+    const submitInput = document.createElement('input');
     submitInput.setAttribute('type', 'submit');
     submitInput.setAttribute('value', 'Add the link to the command.');
     submitInput.setAttribute('id', 'submit-btn-link-input');
+
+    const submitDiv = document.createElement('div');
+    submitDiv.append(hiddenInput);
+    submitDiv.append(hiddenFormName);
     submitDiv.append(submitInput);
     form.append(submitDiv);
 

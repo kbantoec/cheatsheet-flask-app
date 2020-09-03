@@ -14,11 +14,10 @@ if __name__ == '__main__':
     # DONE: Add delete function to each link button
     # DONE: Re-define index item blocks with divs containig 'a' tags
     # DONE: Add delete function to index items
-    # TODO: add update functionalities
-    # Update command: redirects in a new page with all the informations of the command in a form with values,
+    # TODO Update command: redirects in a new page with all the informations of the command in a form with values,
     # as the current values and that we can change and then submit
-    # Update item: replace the paragraph by a input tag with submit button
-    # Update example:
-    # Update link:
+    # DONE: Update item: replace the paragraph by a input tag with submit button
+    # TODO: Update example
+    # TODO: Update link
     # TODO: buttons + - in modal blured
-    # TODO: exit update with button redirecting to init route
+    # DONE: exit update with button redirecting to init route

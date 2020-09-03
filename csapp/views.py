@@ -19,7 +19,9 @@ def index():
     print(request.form)
     if request.method == 'POST' and request.form['formName'] == 'update':
         try:
-            update_item_label: str = """UPDATE `index_items` SET item_label = ? WHERE item_id = ?;"""
+            update_item_label: str = """UPDATE `index_items` 
+                                        SET item_label = ? 
+                                        WHERE item_id = ?;"""
             con.execute(update_item_label, (request.form['label'], request.form['itemId']))
             con.commit()
             con.close()
@@ -76,7 +78,7 @@ def cheatsheet(label: str):
     # Build a `IndexItem` object (retrieve its `item_id`)
     index_item = models.IndexItem(**res)
 
-    if request.method == 'POST' and len(request.form) == 6:
+    if request.method == 'POST' and request.form['formName'] == 'create new command':
         # >>> print(request.form)
         # ImmutableMultiDict([('h1', '...'), ('command', '...'), ('description', '...'), ('lang', '...'),
         #                     ('syntax', '...'), ('label', '...')])
@@ -94,8 +96,7 @@ def cheatsheet(label: str):
         except Exception as e:
             print(f"There was a problem adding your command. Error: {e}.", file=sys.stderr)
             con.close()
-    elif request.method == 'POST' and len(request.form) == 3:
-        print(request.form)
+    elif request.method == 'POST' and request.form['formName'] == 'create new example':
         try:
             insert_example: str = """INSERT INTO `examples` (example_caption, example_content, command_id)
                                      VALUES (?, ?, ?);"""
@@ -108,8 +109,7 @@ def cheatsheet(label: str):
         except sqlite3.Error as e:
             print(f"There was a problem adding your example. Error: {e}.", file=sys.stderr)
             con.close()
-    elif request.method == 'POST' and len(request.form) == 4:
-        print(request.form)
+    elif request.method == 'POST' and request.form['formName'] == 'create new link':
         try:
             insert_link: str = """INSERT INTO `links` (link_label, link_href, link_type, command_id)
                                   VALUES (?, ?, ?, ?);"""
@@ -277,3 +277,43 @@ def delete_link(link_id: int):
     except sqlite3.Error as e:
         print(f"Failed to delete link with id {link_id}. Error: {e}.", file=sys.stderr)
         con.close()
+
+
+@app.route('/update_command/<int:command_id>', methods=['GET', 'POST'])
+def update_command(command_id):
+    con: sqlite3.Connection = utils.create_connection(app.config['DATABASE_URI'])
+    con.row_factory = utils.dict_factory
+
+    path: str = f"/update_command/{command_id}"
+
+    query_item_id: str = "SELECT item_id FROM `commands` WHERE command_id = ?;"
+    item_id: int = con.execute(query_item_id, (command_id,)).fetchone()['item_id']
+    query_item_label: str = "SELECT item_label FROM `index_items` WHERE item_id = ?"
+    label: str = con.execute(query_item_label, (item_id,)).fetchone()['item_label']
+
+    if request.method == 'POST':
+        try:
+            update_command_info: str = """UPDATE `commands` 
+                                          SET command = ?,
+                                              description = ?,
+                                              syntax = ?,
+                                              lang = ?,
+                                              h1 = ?
+                                          WHERE command_id = ?;"""
+            values: tuple = (request.form['command'], request.form['description'], request.form['syntax'],
+                             request.form['lang'], request.form['h1'], command_id)
+            con.execute(update_command_info, values)
+            con.commit()
+            con.close()
+            return redirect(f'/cheatsheet/{label}')
+        except sqlite3.Error as e:
+            print(f"There was a problem updating your command. Error: {e}.", file=sys.stderr)
+
+    query_command_info: str = """SELECT command, description, syntax, lang, h1
+                                 FROM commands
+                                 WHERE command_id = ?;"""
+    res: dict = con.execute(query_command_info, (command_id, )).fetchone()
+
+    command: models.Command = models.Command(item_label=label, **res)
+
+    return render_template('update_command.html', path_action=path, command=command)
