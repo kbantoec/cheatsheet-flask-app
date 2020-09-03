@@ -8,6 +8,9 @@ class IndexItem:
         self.item_label: str = item_label.lower()
         self.item_id: int = item_id
 
+    def __repr__(self):
+        return f"<csapp.models.IndexItem object {{item_label: {self.item_label}, item_id: {self.item_id}}}>"
+
 
 class Example:
     def __init__(self, example_caption: str = None,

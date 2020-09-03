@@ -196,13 +196,31 @@ const addOptionsBtns = (optionLabel) => {
 
         let deleteBtn;
         let updateBtn;
+        let undoBtn;
 
         switch(optionLabel) {
             case 'example':
                 // Delete button
                 deleteBtn = createOptionBtn('delete', optionLabel, div.dataset.exampleId);                
                 // Update button
-                updateBtn = createOptionBtn('update', optionLabel, div.dataset.exampleId);
+                // updateBtn = createOptionBtn('update', optionLabel, div.dataset.exampleId);
+                
+                ///////////////////////
+                ///////////////////////
+                // WORKING HERE ///////
+                ///////////////////////
+                ///////////////////////
+                updateBtn = document.createElement('a');
+                const ico = document.createElement('i');
+                // updateBtn.setAttribute('href', `/update_${optionLabel}/${id}`);
+                updateBtn.setAttribute('class', `update-${optionLabel}-btn ${optionLabel}-options`);
+                updateBtn.setAttribute('onclick', 'updateExample(this);');
+                ico.setAttribute('class', 'fa fa-pencil');            
+                updateBtn.append(ico);
+                
+                // Undo hidden button
+                undoBtn = createOptionBtn('undo', optionLabel, div.dataset.exampleId)
+                
                 break;
             case 'link':
                 // Delete button
@@ -214,8 +232,120 @@ const addOptionsBtns = (optionLabel) => {
         // Add the buttons to the div element
         optionBtnsDiv.append(deleteBtn);
         optionBtnsDiv.append(updateBtn);
+        optionBtnsDiv.append(undoBtn);
         div.append(optionBtnsDiv);
     });
+};
+
+
+const updateExample = (element) => {
+    ///////////////////////
+    ///////////////////////
+    // WORKING HERE /////// don't replace, just hide
+    ///////////////////////
+    ///////////////////////
+    const optionBtnsDiv = element.parentElement;
+    const exampleDiv = optionBtnsDiv.parentElement;
+
+    // Replace children from example-div with a form
+    const form = document.createElement('form');
+    const action = document.getElementsByClassName('modal-body')[0].dataset.actionPath;
+    form.setAttribute('action', action);
+    form.setAttribute('method', 'POST');
+    form.setAttribute('id', 'update-example-form');
+
+    const exampleCaptionLabel = document.createElement('label');
+    exampleCaptionLabel.setAttribute('for', 'example_caption');
+    exampleCaptionLabel.setAttribute('class', 'update-example-labels');
+    exampleCaptionLabel.innerText = 'Example caption';
+
+    const exampleCaptionTextarea = document.createElement('textarea');
+    exampleCaptionTextarea.setAttribute('type', 'text');
+    exampleCaptionTextarea.setAttribute('name', 'example_caption');
+    exampleCaptionTextarea.setAttribute('class', 'update-example-content');
+    exampleCaptionTextarea.setAttribute('id', 'example_caption_update');
+    exampleCaptionTextarea.setAttribute('oninput', 'autoGrow(this);')
+    const exampleCaption = exampleDiv.querySelector('h2');
+    exampleCaptionTextarea.innerText = exampleCaption.innerText;
+
+    const exampleContentLabel = document.createElement('label');
+    exampleContentLabel.setAttribute('for', 'example_content');
+    exampleContentLabel.setAttribute('class', 'update-example-labels');
+    exampleContentLabel.innerText = 'Example content';
+
+    const exampleContentTextarea = document.createElement('textarea');
+    exampleContentTextarea.setAttribute('type', 'text');
+    exampleContentTextarea.setAttribute('name', 'example_content');
+    exampleContentTextarea.setAttribute('class', 'update-example-content');
+    exampleContentTextarea.setAttribute('id', 'example_content_update');
+    exampleContentTextarea.setAttribute('oninput', 'autoGrow(this);')
+    exampleContentTextarea.innerText = exampleDiv.querySelector('code').innerText;
+
+    const formName = createHiddenInput('formName', 'update example');
+    const exampleId = createHiddenInput('example_id', exampleDiv.dataset.exampleId);
+
+    const submitBtn = document.createElement('input');
+    submitBtn.setAttribute('type', 'submit');
+    submitBtn.setAttribute('value', 'Update example');
+    submitBtn.setAttribute('class', 'submit-btn');   
+
+    form.append(exampleCaptionLabel);
+    form.append(exampleCaptionTextarea);
+    form.append(exampleContentLabel);
+    form.append(exampleContentTextarea);
+    form.append(formName);
+    form.append(exampleId);
+    form.append(submitBtn);
+    
+    exampleCaption.classList.add('hidden');
+    exampleDiv.querySelector('pre').classList.add('hidden');
+    exampleDiv.insertBefore(form, optionBtnsDiv);
+    // exampleDiv.firstElementChild.replaceWith(form);
+    // exampleDiv.getElementsByTagName('pre')[0].remove();
+
+    // const undoAnchor = document.createElement('a');
+    // undoAnchor.setAttribute('onclick', 'exitExampleEditMode(this);')
+    // undoAnchor.setAttribute('class', 'undo-btn example-options');
+    // const ico = document.createElement('i');   
+    // ico.setAttribute('class', 'fa fa-undo');
+    // undoAnchor.append(ico);
+    // optionBtnsDiv.append(undoAnchor);
+    const undoBtn = optionBtnsDiv.getElementsByClassName('undo-example-btn')[0];
+    undoBtn.setAttribute('onclick', 'exitExampleEditMode(this);')
+    undoBtn.classList.remove('hidden');
+
+    const deleteBtn = optionBtnsDiv.getElementsByClassName('delete-example-btn')[0];
+    deleteBtn.classList.add('hidden');
+    const updateBtn = optionBtnsDiv.getElementsByClassName('update-example-btn')[0];
+    updateBtn.classList.add('hidden');
+};
+
+const exitExampleEditMode = (element) => {
+    const optionBtnsDiv = element.parentElement;
+    const exampleDiv = optionBtnsDiv.parentElement;
+    const form = document.getElementById('update-example-form');
+
+    const deleteBtn = optionBtnsDiv.getElementsByClassName('delete-example-btn')[0];
+    deleteBtn.classList.remove('hidden');
+    const updateBtn = optionBtnsDiv.getElementsByClassName('update-example-btn')[0];
+    updateBtn.classList.remove('hidden');
+    const undoBtn = optionBtnsDiv.getElementsByClassName('undo-example-btn')[0];
+    undoBtn.classList.add('hidden');
+
+    // Replace the form by the non-edition mode
+    form.remove()
+    exampleDiv.querySelector('pre').classList.remove('hidden');
+    exampleDiv.querySelector('h2').classList.remove('hidden');
+
+    // const exampleCaption = document.createElement('h2');
+    // exampleCaption.innerHTML = document.getElementById('example_caption_update').innerHTML;
+
+    // const exampleContentCode = document.createElement('code');
+    // exampleContentCode.innerHTML = document.getElementById('example_content_update').innerHTML;
+    // const examplePre = document.createElement('pre');
+    // examplePre.append(exampleContentCode);
+    // form.replaceWith(exampleCaption);
+    // exampleDiv.insertBefore(examplePre, optionBtnsDiv);
 };
 
 

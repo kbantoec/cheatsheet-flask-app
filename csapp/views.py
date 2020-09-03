@@ -22,7 +22,7 @@ def index():
             update_item_label: str = """UPDATE `index_items` 
                                         SET item_label = ? 
                                         WHERE item_id = ?;"""
-            con.execute(update_item_label, (request.form['label'], request.form['itemId']))
+            con.execute(update_item_label, (request.form['label'].lower(), request.form['itemId']))
             con.commit()
             con.close()
             return redirect('/')
@@ -121,6 +121,37 @@ def cheatsheet(label: str):
             return redirect(path)
         except sqlite3.Error as e:
             print(f"There was a problem adding your link. Error: {e}.", file=sys.stderr)
+            con.close()
+    elif request.method == 'POST' and request.form['formName'] == 'update example':
+        try:
+            update_example_data: str = """UPDATE `examples` 
+                                          SET example_caption = ?,
+                                              example_content = ?
+                                          WHERE example_id = ?;"""
+            values: tuple = (request.form['example_caption'], request.form['example_content'],
+                             request.form['example_id'])
+            con.execute(update_example_data, values)
+            con.commit()
+            con.close()
+            return redirect(path)
+        except sqlite3.Error as e:
+            print(f"There was a problem updating your example. Error: {e}.", file=sys.stderr)
+            con.close()
+    elif request.method == 'POST' and request.form['formName'] == 'update link':
+        try:
+            update_link_data: str = """UPDATE `links` 
+                                          SET link_label = ?,
+                                              link_href = ?,
+                                              link_type = ?
+                                          WHERE link_id = ?;"""
+            values: tuple = (request.form['link_label'], request.form['link_href'],
+                             request.form['link_type'], request.form['link_id'])
+            con.execute(update_link_data, values)
+            con.commit()
+            con.close()
+            return redirect(path)
+        except sqlite3.Error as e:
+            print(f"There was a problem updating your example. Error: {e}.", file=sys.stderr)
             con.close()
     else:
         # Get the `item_id` from the label
@@ -290,6 +321,7 @@ def update_command(command_id):
     item_id: int = con.execute(query_item_id, (command_id,)).fetchone()['item_id']
     query_item_label: str = "SELECT item_label FROM `index_items` WHERE item_id = ?"
     label: str = con.execute(query_item_label, (item_id,)).fetchone()['item_label']
+    cheatsheet_path: str = f'/cheatsheet/{label}'
 
     if request.method == 'POST':
         try:
@@ -305,15 +337,14 @@ def update_command(command_id):
             con.execute(update_command_info, values)
             con.commit()
             con.close()
-            return redirect(f'/cheatsheet/{label}')
+            return redirect(cheatsheet_path)
         except sqlite3.Error as e:
             print(f"There was a problem updating your command. Error: {e}.", file=sys.stderr)
 
-    query_command_info: str = """SELECT command, description, syntax, lang, h1
+    query_command_info: str = """SELECT *
                                  FROM commands
                                  WHERE command_id = ?;"""
     res: dict = con.execute(query_command_info, (command_id, )).fetchone()
 
     command: models.Command = models.Command(item_label=label, **res)
-
-    return render_template('update_command.html', path_action=path, command=command)
+    return render_template('update_command.html', path_action=path, command=command, cheatsheet_path=cheatsheet_path)
