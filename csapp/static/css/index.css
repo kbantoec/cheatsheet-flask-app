@@ -160,3 +160,29 @@ input {
 .options i {
   display: inline;
 }
+
+.overlaid-form {
+  height: 200px;
+  width: 200px;
+  background-color: #2657eb;
+  border-radius: 3px;
+}
+
+#label {
+  height: 16px;
+  margin: auto;
+  margin-bottom: 5px;
+}
+
+#update-submit-btn {
+  margin: auto;
+  margin-top: 5px;
+}
+
+.form-add-div {
+  display: grid;
+}
+
+.form-add-div:nth-child(n) {
+  margin: auto;
+}

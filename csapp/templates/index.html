@@ -29,27 +29,15 @@
             <div data-item-id={{ item.item_id }}>
                 <a class="show-item" href="./cheatsheet/{{ item.item_label }}">
                     <div>
-                        <p>{{ item.item_label|capitalize }}</p>
+                        <p class="item-label-paragraph">{{ item.item_label|capitalize }}</p>
                     </div>
                 </a>
                 <div class="option-btns">
                     <a href="/delete_item/{{ item.item_id }}" class="delete-btn options"><i class="fa fa-trash"></i></a>
-                    <a href="/update_item/{{ item.item_id }}" class="update-btn options"><i class="fa fa-pencil"></i></a>
+                    <a onclick="replaceParagraphWithForm(this);" class="update-btn options"><i class="fa fa-pencil"></i></a>
                 </div>
             </div>
             {% endfor %}
-
-            <!-- {% for item in items %}
-            <a href="./cheatsheet/{{ item.item_label }}">
-                <div>
-                    <p>{{ item.item_label|capitalize }}</p>  
-                    <div class="option-btns">
-                        <button class="delete-btn options"><i class="fa fa-trash"></i></button>
-                        <button class="update-btn options"><i class="fa fa-pencil"></i></button>
-                    </div>
-                </div>
-            </a>
-            {% endfor %} -->
 
             <div class="add-item">
                 <button class="add-item-btn" onclick="addItem()">+</button>

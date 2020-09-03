@@ -20,3 +20,5 @@ if __name__ == '__main__':
     # Update item: replace the paragraph by a input tag with submit button
     # Update example:
     # Update link:
+    # TODO: buttons + - in modal blured
+    # TODO: exit update with button redirecting to init route

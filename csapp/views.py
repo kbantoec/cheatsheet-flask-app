@@ -16,7 +16,17 @@ def index():
     # Allows to pull request results in `dict` form
     con.row_factory = utils.dict_factory
 
-    if request.method == 'POST':
+    print(request.form)
+    if request.method == 'POST' and request.form['formName'] == 'update':
+        try:
+            update_item_label: str = """UPDATE `index_items` SET item_label = ? WHERE item_id = ?;"""
+            con.execute(update_item_label, (request.form['label'], request.form['itemId']))
+            con.commit()
+            con.close()
+            return redirect('/')
+        except sqlite3.Error as e:
+            print(f"There was a problem updating your item. Error: {e}.", file=sys.stderr)
+    elif request.method == 'POST' and request.form['formName'] == 'create':
         # Retrieve the submitted label value
         item_label: str = str(request.form['label'])
         # Create `IndexItem` instance (transforms automatically to lowercase the `item_label`)

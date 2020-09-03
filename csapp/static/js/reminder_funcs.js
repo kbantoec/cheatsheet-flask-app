@@ -45,3 +45,5 @@ const noneToBlock = (arr) => {
         return (element.style.display === "block") ? element.style.display = "none" : element.style.display = "block";
     });
 };
+
+

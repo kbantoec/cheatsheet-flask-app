@@ -4,4 +4,4 @@ venv
 .vscode
 csapp/static/img/
 dist/
-*.db
+app.db
