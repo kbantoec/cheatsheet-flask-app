@@ -4,7 +4,7 @@ const addItemToTable = (element) => {
     
     if (forms.length > 0) {
         const instruction1 = (forms[0].style.display === "block") ? forms[0].style.display = "none" : forms[0].style.display = "block";
-        const instruction2 = (element.innerHTML === `<i class="fa fa-plus-square"></i>`) ? element.innerHTML = `<i class="fa fa-minus-square"></i>` : element.innerHTML = `<i class="fa fa-plus-square"></i>`;
+        const instruction2 = (element.innerHTML === `<i class="fa fa-plus-square"></i>`) ? element.innerHTML = `<i class="fa fa-minus-square"></i>` : element.innerHTML = `<i class="fa fa-plus-square"></i>`;        
         return (instruction1) && (instruction2);
     }
 };
@@ -24,6 +24,7 @@ const addExamplesToCommand = (element) => {
     if (forms.length > 0) {
         const instruction1 = (forms[1].style.display === "block") ? forms[1].style.display = "none" : forms[1].style.display = "block";
         const instruction2 = (element.innerHTML === `<i class="fa fa-plus-square"></i>`) ? element.innerHTML = `<i class="fa fa-minus-square"></i>` : element.innerHTML = `<i class="fa fa-plus-square"></i>`;
+        // const instruction2 = (element.innerText === '+') ? element.innerText = '-' : element.innerText = '+';
         return (instruction1) && (instruction2);
     }
 };

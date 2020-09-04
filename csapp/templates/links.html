@@ -10,7 +10,7 @@
         <div>
             <ul class="fa-ul">
                 {% for link in command_links %}
-                <li class="link-div" data-link-id="{{ link.link_id }}"><span class="fa-li"><i class="fa fa-file-{{ link.link_type }}-o"></i></span> <a href="{{ link.link_href }}" target="_blank">{{ link.link_label }}</a></li>
+                <li class="link-div" data-link-id="{{ link.link_id }}"><span class="fa-li"><i class="fa fa-file-{{ link.link_type }}-o" data-link-type="{{ link.link_type }}"></i></span> <a href="{{ link.link_href }}" target="_blank">{{ link.link_label }}</a></li>
                 {% endfor %}
             </ul>
         </div>   

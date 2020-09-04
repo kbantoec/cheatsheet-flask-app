@@ -268,14 +268,31 @@ textarea:nth-child(n) {
   padding: 0;
   font-size: 25px;
   cursor: pointer;
-  color: #2657eb;
+  color: #8ba8ff;
   transition-property: color;
   transition-timing-function: ease-in-out;
   transition-duration: 500ms;
 }
 
 .add-item-btn:hover {
-  color: rgba(145, 93, 154, 1);
+  color: #de6161;
+}
+
+.add-btn {
+  background-color: transparent;
+  margin: 20px 0px;
+  border-width: 0;
+  padding: 0;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #8ba8ff;
+  transition-property: color;
+  transition-timing-function: ease-in-out;
+  transition-duration: 500ms;
+}
+
+.add-btn:hover {
+  color: #de6161;
 }
 
 .reminder-table {
@@ -361,7 +378,7 @@ textarea:nth-child(n) {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .add-item-btn {
+  .add-item-btn, .add-btn {
     animation: heartbeating infinite 1s alternate;
   }
 }
@@ -438,7 +455,7 @@ textarea:nth-child(n) {
   border: none;
   outline: none;
   background: none;
-  color: rgba(145, 93, 154, 1);
+  color: #8ba8ff;
   font-size: 1.25em;
   transform: scale(1);
   transition: 0.2s ease-in-out;
@@ -591,6 +608,15 @@ textarea:nth-child(n) {
   color: #de6161;
 }
 
+.link-options i {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.link-options i:hover {
+  color: #de6161;
+}
+
 .example-options > i, .link-options > i {
   transition-timing-function: ease;
   transition-duration: 300ms;
@@ -626,12 +652,11 @@ textarea:nth-child(n) {
   padding: 5px;
 }
 
-.update-example-labels {
+.update-example-labels, .update-link-labels {
   display: block;
   font-weight: bold;
   padding: 5px 0px;
 }
-
 
 .option-btns-div a {
   margin: 0px 20px;
@@ -654,4 +679,12 @@ textarea:nth-child(n) {
 .submit-btn:hover {
   background-color: #89253e;
   transform: translate(3px, 3px);
+}
+
+.update-link-select {
+  display: block;
+}
+
+#link_type {
+  margin-left: 10px;
 }

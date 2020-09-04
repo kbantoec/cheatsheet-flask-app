@@ -144,8 +144,8 @@ def cheatsheet(label: str):
                                               link_href = ?,
                                               link_type = ?
                                           WHERE link_id = ?;"""
-            values: tuple = (request.form['link_label'], request.form['link_href'],
-                             request.form['link_type'], request.form['link_id'])
+            values: tuple = (request.form['link_label_update'], request.form['link_href_update'],
+                             request.form['link_type_update'], request.form['link_id'])
             con.execute(update_link_data, values)
             con.commit()
             con.close()

@@ -38,3 +38,8 @@ const createOptionBtn = (action, optionLabel, id) => {
     btn.append(ico);
     return btn;
 };
+
+
+const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};

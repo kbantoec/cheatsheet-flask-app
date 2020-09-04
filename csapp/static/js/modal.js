@@ -153,8 +153,9 @@ const subItemAddBtn = (subItemLabel, func) => {
     btnContainer.setAttribute('id', 'add-' + subItemLabel + '-div');
 
     const btn = document.createElement('button');
-    btn.setAttribute('class', 'add-item-btn');
+    btn.setAttribute('class', `add-${subItemLabel}-btn add-btn`);
     btn.setAttribute('onclick', func + '(this);');
+    // btn.innerText = '+';
     btn.innerHTML = `<i class="fa fa-plus-square"></i>`;
     return [btnContainer, btn];
 };
@@ -198,35 +199,30 @@ const addOptionsBtns = (optionLabel) => {
         let updateBtn;
         let undoBtn;
 
-        switch(optionLabel) {
+        switch (optionLabel) {
             case 'example':
                 // Delete button
                 deleteBtn = createOptionBtn('delete', optionLabel, div.dataset.exampleId);                
                 // Update button
-                // updateBtn = createOptionBtn('update', optionLabel, div.dataset.exampleId);
-                
-                ///////////////////////
-                ///////////////////////
-                // WORKING HERE ///////
-                ///////////////////////
-                ///////////////////////
-                updateBtn = document.createElement('a');
-                const ico = document.createElement('i');
-                // updateBtn.setAttribute('href', `/update_${optionLabel}/${id}`);
-                updateBtn.setAttribute('class', `update-${optionLabel}-btn ${optionLabel}-options`);
-                updateBtn.setAttribute('onclick', 'updateExample(this);');
-                ico.setAttribute('class', 'fa fa-pencil');            
-                updateBtn.append(ico);
+                // updateBtn = document.createElement('a');
+                // const ico = document.createElement('i');
+                // updateBtn.setAttribute('class', `update-${optionLabel}-btn ${optionLabel}-options`);
+                // updateBtn.setAttribute('onclick', 'updateExample(this);');
+                // ico.setAttribute('class', 'fa fa-pencil');            
+                // updateBtn.append(ico);
+                updateBtn = createUpdateBtn(optionLabel, 'updateExample(this);');
                 
                 // Undo hidden button
-                undoBtn = createOptionBtn('undo', optionLabel, div.dataset.exampleId)
+                undoBtn = createOptionBtn('undo', optionLabel, div.dataset.exampleId);
                 
                 break;
             case 'link':
                 // Delete button
                 deleteBtn = createOptionBtn('delete', optionLabel, div.dataset.linkId);                
                 // Update button
-                updateBtn = createOptionBtn('update', optionLabel, div.dataset.linkId);
+                updateBtn = createUpdateBtn(optionLabel, 'updateLink(this);');
+                // Undo hidden button
+                undoBtn = createOptionBtn('undo', optionLabel, div.dataset.linkId);
         }      
         
         // Add the buttons to the div element
@@ -238,16 +234,25 @@ const addOptionsBtns = (optionLabel) => {
 };
 
 
+const createUpdateBtn = (optionLabel, onclickFunc) => {
+    /*
+     * `onclickFunc` e.g.: 'updateExample(this);'
+     */
+    const anchorBtn = document.createElement('a');
+    const ico = document.createElement('i');
+    anchorBtn.setAttribute('class', `update-${optionLabel}-btn ${optionLabel}-options`);
+    anchorBtn.setAttribute('onclick', onclickFunc);
+    ico.setAttribute('class', 'fa fa-pencil');            
+    anchorBtn.append(ico);
+    return anchorBtn;
+};
+
+
 const updateExample = (element) => {
-    ///////////////////////
-    ///////////////////////
-    // WORKING HERE /////// don't replace, just hide
-    ///////////////////////
-    ///////////////////////
     const optionBtnsDiv = element.parentElement;
     const exampleDiv = optionBtnsDiv.parentElement;
 
-    // Replace children from example-div with a form
+    // Create the form
     const form = document.createElement('form');
     const action = document.getElementsByClassName('modal-body')[0].dataset.actionPath;
     form.setAttribute('action', action);
@@ -300,16 +305,7 @@ const updateExample = (element) => {
     exampleCaption.classList.add('hidden');
     exampleDiv.querySelector('pre').classList.add('hidden');
     exampleDiv.insertBefore(form, optionBtnsDiv);
-    // exampleDiv.firstElementChild.replaceWith(form);
-    // exampleDiv.getElementsByTagName('pre')[0].remove();
 
-    // const undoAnchor = document.createElement('a');
-    // undoAnchor.setAttribute('onclick', 'exitExampleEditMode(this);')
-    // undoAnchor.setAttribute('class', 'undo-btn example-options');
-    // const ico = document.createElement('i');   
-    // ico.setAttribute('class', 'fa fa-undo');
-    // undoAnchor.append(ico);
-    // optionBtnsDiv.append(undoAnchor);
     const undoBtn = optionBtnsDiv.getElementsByClassName('undo-example-btn')[0];
     undoBtn.setAttribute('onclick', 'exitExampleEditMode(this);')
     undoBtn.classList.remove('hidden');
@@ -332,20 +328,149 @@ const exitExampleEditMode = (element) => {
     const undoBtn = optionBtnsDiv.getElementsByClassName('undo-example-btn')[0];
     undoBtn.classList.add('hidden');
 
-    // Replace the form by the non-edition mode
+    // Remove the form
     form.remove()
+    // De-hide the other elements
     exampleDiv.querySelector('pre').classList.remove('hidden');
     exampleDiv.querySelector('h2').classList.remove('hidden');
+};
 
-    // const exampleCaption = document.createElement('h2');
-    // exampleCaption.innerHTML = document.getElementById('example_caption_update').innerHTML;
 
-    // const exampleContentCode = document.createElement('code');
-    // exampleContentCode.innerHTML = document.getElementById('example_content_update').innerHTML;
-    // const examplePre = document.createElement('pre');
-    // examplePre.append(exampleContentCode);
-    // form.replaceWith(exampleCaption);
-    // exampleDiv.insertBefore(examplePre, optionBtnsDiv);
+const createUpdateFormLabel = (forValue, classValue, innerTextValue) => {
+    const label = document.createElement('label');
+    label.setAttribute('for', forValue);
+    label.setAttribute('class', classValue);
+    label.innerText = innerTextValue;
+    return label;
+};
+
+const createUpdateFormTextarea = (nameAndIdValue, classValue) => {
+    const textarea = document.createElement('textarea');
+    textarea.setAttribute('type', 'text');
+    textarea.setAttribute('name', nameAndIdValue);
+    textarea.setAttribute('class', classValue);
+    textarea.setAttribute('id', nameAndIdValue);
+    textarea.setAttribute('oninput', 'autoGrow(this);')
+    return textarea;
+};
+
+
+const createLinkTypeOption = (nameValue) => {
+    const option = document.createElement('option');
+    option.setAttribute('name', nameValue.toLowerCase());
+    option.innerText = nameValue.toLowerCase();
+    return option;
+};
+
+
+const createLinkTypeSelect = (nameValueAndId, classValue) => {
+    const linkTypeSelect = document.createElement('select');
+    linkTypeSelect.setAttribute('name', nameValueAndId);
+    linkTypeSelect.setAttribute('id', nameValueAndId);
+    linkTypeSelect.setAttribute('class', classValue);
+
+    const video = createLinkTypeOption('video');
+    const code = createLinkTypeOption('code');
+    const text = createLinkTypeOption('text');
+    const pdf = createLinkTypeOption('pdf');
+    const zip = createLinkTypeOption('zip');
+    const image = createLinkTypeOption('image');
+    const excel = createLinkTypeOption('excel');
+    const archive = createLinkTypeOption('archive');
+    const audio = createLinkTypeOption('audio');
+
+    linkTypeSelect.append(video);
+    linkTypeSelect.append(code);
+    linkTypeSelect.append(text);
+    linkTypeSelect.append(pdf);
+    linkTypeSelect.append(zip);
+    linkTypeSelect.append(image);
+    linkTypeSelect.append(excel);
+    linkTypeSelect.append(archive);
+    linkTypeSelect.append(audio);
+    return linkTypeSelect;
+};
+
+
+const updateLink = (element) => {
+    /*
+     * We create a form on the fly and hide the other elements such that
+     * if we need to undo the edit-mode, we can de-hide and remove the form,
+     * otherwise, we sumit the form and return to the current page.
+     */
+    const optionBtnsDiv = element.parentElement;
+    const li = optionBtnsDiv.parentElement;
+    const anchor = li.querySelector('a');
+    const span = li.querySelector('span');
+    console.log(li);
+
+    // Create the form
+    const form = document.createElement('form');
+    const action = document.getElementsByClassName('modal-body')[0].dataset.actionPath;
+    form.setAttribute('action', action);
+    form.setAttribute('method', 'POST');
+    form.setAttribute('id', 'update-link-form');
+
+    // Create form entries
+    const linkLabelLabel = createUpdateFormLabel(forValue='link_label_update', classValue='update-link-labels', innerTextValue='Link label');
+    const linkLabelTextarea = createUpdateFormTextarea(nameAndIdValue='link_label_update', classValue='update-link-textarea');
+    linkLabelTextarea.innerText = anchor.innerText;
+    const linkHrefLabel = createUpdateFormLabel(forValue='link_href_update', classValue='update-link-labels', innerTextValue='Link href');   
+    const linkHrefTextarea = createUpdateFormTextarea(nameAndIdValue='link_href_update', classValue='update-link-textarea');
+    linkHrefTextarea.innerText = anchor.getAttribute('href');
+    const linkTypeLabel = createUpdateFormLabel(forValue='link_type_update', classValue='update-link-labels', innerTextValue='Link type');
+    const linkTypeSelect = createLinkTypeSelect(nameAndIdValue='link_type_update', classValue='update-link-select');
+    
+    const formName = createHiddenInput('formName', 'update link');
+    const linkId = createHiddenInput('link_id', li.dataset.linkId);    
+    const submitBtn = document.createElement('input');
+    submitBtn.setAttribute('type', 'submit');
+    submitBtn.setAttribute('value', 'Update link');
+    submitBtn.setAttribute('class', 'submit-btn');
+    
+    // Append all entries to the form
+    form.append(linkLabelLabel);
+    form.append(linkLabelTextarea);
+    form.append(linkHrefLabel);
+    form.append(linkHrefTextarea);
+    form.append(linkTypeLabel);
+    // form.append(linkTypeTextarea);
+    form.append(linkTypeSelect);
+    form.append(formName);
+    form.append(linkId);
+    form.append(submitBtn);
+
+    // Insert the form in list
+    li.insertBefore(form, optionBtnsDiv);
+
+    // Hide and de-hide elements
+    span.classList.add('hidden');
+    anchor.classList.add('hidden');
+    const undoBtn = optionBtnsDiv.getElementsByClassName('undo-link-btn')[0];
+    undoBtn.classList.remove('hidden');
+    undoBtn.setAttribute('onclick', 'exitLinkEditMode(this);');
+    optionBtnsDiv.getElementsByClassName('delete-link-btn')[0].classList.add('hidden');
+    optionBtnsDiv.getElementsByClassName('update-link-btn')[0].classList.add('hidden');
+};
+
+
+const exitLinkEditMode = (element) => {
+    const optionBtnsDiv = element.parentElement;
+    const li = optionBtnsDiv.parentElement;
+    const form = document.getElementById('update-link-form');
+
+    const deleteBtn = optionBtnsDiv.getElementsByClassName('delete-link-btn')[0];
+    deleteBtn.classList.remove('hidden');
+    const updateBtn = optionBtnsDiv.getElementsByClassName('update-link-btn')[0];
+    updateBtn.classList.remove('hidden');
+    const undoBtn = optionBtnsDiv.getElementsByClassName('undo-link-btn')[0];
+    undoBtn.classList.add('hidden');
+
+    // Remove the form
+    form.remove()
+    // De-hide the other elements
+    li.querySelector('span').classList.remove('hidden');
+    li.querySelector('a').classList.remove('hidden');
 };
 
 
@@ -385,7 +510,9 @@ const createLinksForm = (actionPath, commandId) => {
 
     createFormEntry(form, 'Link label', 'link_label');
     createFormEntry(form, 'Link href', 'link_href');
-    createFormEntry(form, 'Link type', 'link_type');    
+    const select = createLinkTypeSelect(nameAndIdValue='link_type', classValue='add-item-input')
+    form.append(select);
+    // createFormEntry(form, 'Link type', 'link_type');    /////////////
     const hiddenInput = createHiddenInput('command_id', commandId);
     const hiddenFormName = createHiddenInput('formName', 'create new link');
     
