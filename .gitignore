@@ -5,3 +5,4 @@ venv
 csapp/static/img/
 dist/
 app.db
+private
