@@ -60,8 +60,6 @@ const closeModal = (modal) => {
 
 
 const appendSyntax = (button, element) => {
-    // For JS console:
-    // let tr = document.querySelectorAll('[data-modal-target]')[0].parentElement.parentElement;
     const tr = button.parentElement.parentElement.parentElement;
 
     if (tr.dataset.syntax.length > 0) {
@@ -202,14 +200,7 @@ const addOptionsBtns = (optionLabel) => {
         switch (optionLabel) {
             case 'example':
                 // Delete button
-                deleteBtn = createOptionBtn('delete', optionLabel, div.dataset.exampleId);                
-                // Update button
-                // updateBtn = document.createElement('a');
-                // const ico = document.createElement('i');
-                // updateBtn.setAttribute('class', `update-${optionLabel}-btn ${optionLabel}-options`);
-                // updateBtn.setAttribute('onclick', 'updateExample(this);');
-                // ico.setAttribute('class', 'fa fa-pencil');            
-                // updateBtn.append(ico);
+                deleteBtn = createOptionBtn('delete', optionLabel, div.dataset.exampleId);
                 updateBtn = createUpdateBtn(optionLabel, 'updateExample(this);');
                 
                 // Undo hidden button
@@ -434,7 +425,6 @@ const updateLink = (element) => {
     form.append(linkHrefLabel);
     form.append(linkHrefTextarea);
     form.append(linkTypeLabel);
-    // form.append(linkTypeTextarea);
     form.append(linkTypeSelect);
     form.append(formName);
     form.append(linkId);
@@ -512,7 +502,6 @@ const createLinksForm = (actionPath, commandId) => {
     createFormEntry(form, 'Link href', 'link_href');
     const select = createLinkTypeSelect(nameAndIdValue='link_type', classValue='add-item-input')
     form.append(select);
-    // createFormEntry(form, 'Link type', 'link_type');    /////////////
     const hiddenInput = createHiddenInput('command_id', commandId);
     const hiddenFormName = createHiddenInput('formName', 'create new link');
     

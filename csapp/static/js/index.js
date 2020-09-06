@@ -74,7 +74,6 @@ const replaceParagraphWithForm = (element) => {
 
     const optionBtnsDiv = mainDiv.getElementsByClassName('option-btns')[0];
     const undoAnchor = document.createElement('a');
-    // undoAnchor.setAttribute('href', '/');
     undoAnchor.setAttribute('onclick', 'exitEditMode(this);')
     undoAnchor.setAttribute('class', 'undo-btn options');
     const ico = document.createElement('i');   

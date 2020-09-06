@@ -9,11 +9,6 @@ const createDeleteBtn = (optionLabel, id) => {
 };
 
 
-// const createNewInput = () => {
-
-// };
-
-
 const createOptionBtn = (action, optionLabel, id) => {
     const btn = document.createElement('a');
     const ico = document.createElement('i');
@@ -27,7 +22,6 @@ const createOptionBtn = (action, optionLabel, id) => {
         case 'update':
             btn.setAttribute('href', `/update_${optionLabel}/${id}`);
             btn.setAttribute('class', `update-${optionLabel}-btn ${optionLabel}-options`);
-            // btn.setAttribute('onclick', 'updateCommand(this);');
             ico.setAttribute('class', 'fa fa-pencil');
             break;
         case 'undo':

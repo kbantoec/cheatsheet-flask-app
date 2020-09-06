@@ -124,26 +124,6 @@ def create_links_table(app):
     create_table(app, table)
 
 
-# def create_commands_examples_table(app):
-#     # https://stackoverflow.com/questions/7296846/how-to-implement-one-to-one-one-to-many-and-many-to-many-relationships-while-de
-
-#     table: str = """CREATE TABLE IF NOT EXISTS `commands_examples` (
-#                         example_id INTEGER NOT NULL,
-#                         command_id INTEGER NOT NULL,
-#                         PRIMARY KEY (example_id, command_id),
-#                         FOREIGN KEY (example_id)
-#                             REFERENCES examples (example_id)
-#                                 ON DELETE CASCADE 
-#                                 ON UPDATE NO ACTION,
-#                         FOREIGN KEY (command_id)
-#                             REFERENCES commands (command_id)
-#                                 ON DELETE CASCADE 
-#                                 ON UPDATE NO ACTION
-#                     );"""
-    
-#     create_table(app, table)
-
-
 def drop_index_items_table(app):
     drop_table(app, 'index_items')   
 
@@ -214,11 +194,7 @@ def test_db(app):
                        VALUES ('Print hello world', 'print(''hello world'')', 3);""")
         con.commit()
         print(con.execute("SELECT * FROM examples;").fetchall())
-
-        # con.execute("""INSERT INTO commands_examples (example_id, command_id) VALUES (1, 3)""")        
-        # print(con.execute("SELECT * FROM commands_examples;").fetchall())
-
-        # Modify informations to see if foreing key constraints update correctly
+        
         con.execute("""UPDATE index_items
                        SET item_id = 100
                        WHERE item_label = 'pandas';""")
@@ -243,16 +219,6 @@ def test_db(app):
                                'video',
                                99);""")
         con.commit()
-
-        # con.execute("""UPDATE examples
-        #                SET example_id = 99
-        #                WHERE caption = 'Print hello world';""")  # FOREIGN KEY constraint failed
-        # con.commit()
-        
-        # con.execute("""DELETE FROM examples WHERE example_id = 1;""")
-        # con.commit()
-        # print(con.execute("SELECT * FROM examples;").fetchall())
-        # print(con.execute("SELECT * FROM commands_examples;").fetchall())
     except sqlite3.Error as e:
         print(e)
     con.close()

@@ -5,6 +5,16 @@ from . import utils
 import os
 
 
+"""
+The functions below are functions to run in the command line (CLI).
+The idea of the `flask reinit-db` command is to start with a new database again.
+During development, it is worth to use the `test-db` command with your own tests to 
+verify that the database behaves as desired.
+Run `flask --help` in the flask shell tool after having activated your virtual 
+environment to get more information.
+"""
+
+
 @app.cli.command()
 def create_index_items_table():
     """Create index_items Table."""
@@ -38,17 +48,6 @@ def drop_reminder_table_data():
 def init_db():
     """Initialize the database with all tables."""
     utils.init_db(app)
-    # utils.enable_fk(app)
-    # utils.create_index_items_table(app)
-    # utils.create_commands_table(app)
-    # utils.create_examples_table(app)
-    # utils.create_links_table(app)
-    # print("Database initialized!")
-
-    # utils.create_examples_table(app)
-    # utils.create_links_table(app)
-    # utils.create_commands_examples_table(app)
-    # utils.create_commands_links_table(app)
 
 
 @app.cli.command()
@@ -62,11 +61,6 @@ def drop_database():
 def reinit_db():
     """Overwrite the database file and initialize all tables again."""
     utils.reinit_db(app)
-    # db_uri: str = app.config['DATABASE_URI']
-    #
-    # with open(db_uri, mode="w"):
-    #     # The "w" method will overwrite the entire file.
-    #     print("Database reinitialized!")
 
 
 @app.cli.command()

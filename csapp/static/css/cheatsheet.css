@@ -465,6 +465,7 @@ textarea:nth-child(n) {
   transform: scale(1.2);
 }
 
+
 #add-example-to-command, #add-link-to-command {
   background-color: gray;
   padding: 20px;
@@ -526,8 +527,6 @@ textarea:nth-child(n) {
 .toggle-down-options:hover .triangle {
   color: #2657eb;
   transform: rotate(90deg) translate(0px, -20px);
-  /* transform: scale(1.1) rotate(90deg); */
-  /* background-color: white; */
 }
 
 .toggle-down-options:hover {
@@ -555,25 +554,12 @@ textarea:nth-child(n) {
   cursor: pointer;
   color: #2657eb;
 }
-/* 
 
 .delete-command-btn {
-  transition-property: transform;
-  transition-timing-function: ease-in-out;
-  transition-duration: 500ms;
-}
-
-.delete-command-btn:hover {
-  transform: scale(1.2), rotate(90deg);
-} */
-
-.delete-command-btn {
-  /* color: #de6161; */
   margin-top: 15px;
 }
 
 .update-command-btn {
-  /* color: rgba(142, 68, 173, 1);; */
   margin-top: 50px;  
 }
 
@@ -632,10 +618,6 @@ textarea:nth-child(n) {
   font-weight: bold;
   padding: 5px;
 }
-
-/* .delete-example-btn, .delete-link-btn {
-  padding-right: 50px;
-} */
 
 #update-command-container {
   margin-top: 50px;
