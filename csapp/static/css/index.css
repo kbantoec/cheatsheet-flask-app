@@ -186,3 +186,7 @@ input {
 .form-add-div:nth-child(n) {
   margin: auto;
 }
+
+.item-label-paragraph {
+  text-align: center;
+}
