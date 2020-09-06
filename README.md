@@ -23,4 +23,4 @@ I am using SQLite relational database.
 
 I am not using the `SQLAlchemy` ORM (Object-Relational Mapping). Instead I use `sqlite3` to interact with the database.
 
-I set up several command line commands that can run in the flask shell during development.
+I have set up several command line commands that can run in the flask shell during development.
