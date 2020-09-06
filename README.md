@@ -4,9 +4,9 @@ In short, this full-stack project was the opportunity for me to use several tech
 
 The purpose of this web application is to order programming commands in dynamically generated web pages that could be saved in a database (here: SQLite).
 
-![index](.\csapp\static\img\index.png)
+![index](https://github.com/kbantoec/cheatsheet-flask-app/blob/master/csapp/static/img/index.png)
 
-![cheatsheet](.\csapp\static\img\cheatsheet.png)
+![cheatsheet](https://github.com/kbantoec/cheatsheet-flask-app/blob/master/csapp/static/img/cheatsheet.png)
 
 ## Workflow
 
