@@ -8,9 +8,22 @@ The purpose of this web application is to order programming commands in dynamica
 
 ![cheatsheet](https://github.com/kbantoec/cheatsheet-flask-app/blob/master/csapp/static/img/cheatsheet.png)
 
-## Workflow
+## How to run this app
 
-Using PowerShell:
+### On Windows command line
+
+To run this app first clone repository and then open a terminal to the app folder.
+
+```bash
+>>> git clone https://github.com/kbantoec/cheatsheet-flask-app.git
+>>> cd cheatsheet-flask-app
+>>> virtualenv venv
+>>> .\venv\Scripts\activate
+>>> pip install -r requirements.txt
+>>> python .\run.py
+```
+
+If you are using PowerShell, after having set up your virtual environment:
 
 ```powershell
 >>> .\activate_environment.ps1
