@@ -30,6 +30,20 @@ If you are using PowerShell, after having set up your virtual environment:
 >>> flask run
 ```
 
+## Initialize database
+
+```bash
+>>> flask init-db
+```
+
+If you want to reinitialize the database:
+
+```bash
+>>> flask reinit-db
+```
+
+This overwrites the current database by creating a new one.
+
 ## Specifications
 
 I am using SQLite relational database.
